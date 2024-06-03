@@ -6,6 +6,7 @@ class Ship
 {
     private int $size;
 
+    /** @var Coordinate[] $coordinates */
     private array $coordinates;
 
     public function __construct(int $size)
