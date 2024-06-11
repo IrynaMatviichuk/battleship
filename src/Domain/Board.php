@@ -4,7 +4,7 @@ namespace Battleship\Domain;
 
 class Board
 {
-    private const SIZE = 10;
+    public const SIZE = 10;
 
     private \SplFixedArray $cells;
 
@@ -23,24 +23,24 @@ class Board
         }
     }
 
-    public function guess(int $row, int $column): void
+    public function guess(Coordinate $coordinate): void
     {
-        $cell = $this->cells[$row][$column];
+        $cell = $this->cells[$coordinate->getRow()][$coordinate->getColumn()];
 
-        $this->cells[$row][$column] = $cell->guess();
+        $this->cells[$coordinate->getRow()][$coordinate->getColumn()] = $cell->guess();
     }
 
-    public function getCell(int $row, int $column): Cell
+    public function getCell(Coordinate $coordinate): Cell
     {
-        return $this->cells[$row][$column];
+        return $this->cells[$coordinate->getRow()][$coordinate->getColumn()];
     }
 
     public function placeShip(Ship $ship): void
     {
         foreach ($ship->getCoordinates() as $coordinate) {
-            $cell = $this->getCell($coordinate[0], $coordinate[1]);
+            $cell = $this->getCell($coordinate);
 
-            $this->cells[$coordinate[0]][$coordinate[1]] = $cell->occupy();
+            $this->cells[$coordinate->getRow()][$coordinate->getColumn()] = $cell->occupy();
         }
     }
 }

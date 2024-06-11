@@ -3,6 +3,7 @@
 namespace Tests\Battleship\Domain;
 
 use Battleship\Domain\Board;
+use Battleship\Domain\Coordinate;
 use Battleship\Domain\Ship;
 use PHPUnit\Framework\TestCase;
 
@@ -19,9 +20,9 @@ class BoardTest extends TestCase
     {
         $board = new Board();
 
-        $board->guess( 3, 4);
+        $board->guess(new Coordinate(3, 4));
 
-        $cell = $board->getCell(3, 4);
+        $cell = $board->getCell(new Coordinate(3, 4));
 
         $this->assertFalse($cell->isGuessed());
     }
@@ -31,13 +32,13 @@ class BoardTest extends TestCase
         $board = new Board();
 
         $ship = new Ship(2);
-        $ship->place([[0, 0], [0, 1]]);
+        $ship->place([new Coordinate(0, 0), new Coordinate(0, 1)]);
 
         $board->placeShip($ship);
 
-        $board->guess(0, 0);
+        $board->guess(new Coordinate(0, 0));
 
-        $cell = $board->getCell(0, 0);
+        $cell = $board->getCell(new Coordinate(0, 0));
 
         $this->assertTrue($cell->isGuessed());
     }
@@ -49,12 +50,12 @@ class BoardTest extends TestCase
         $board = new Board();
 
         $ship = new Ship(2);
-        $ship->place([[0, 0], [0, 1]]);
+        $ship->place([new Coordinate(0, 0), new Coordinate(0, 1)]);
 
         $board->placeShip($ship);
 
         $ship2 = new Ship(2);
-        $ship2->place([[0, 0], [0, 1]]);
+        $ship2->place([new Coordinate(0, 0), new Coordinate(0, 1)]);
 
         $board->placeShip($ship2);
     }
