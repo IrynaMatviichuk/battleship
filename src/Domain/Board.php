@@ -2,8 +2,12 @@
 
 namespace Battleship\Domain;
 
+use Battleship\Shared\EventRecorder;
+
 class Board
 {
+    use EventRecorder;
+
     public const SIZE = 10;
 
     private \SplFixedArray $cells;
@@ -25,9 +29,11 @@ class Board
 
     public function guess(Coordinate $coordinate): void
     {
-        $cell = $this->cells[$coordinate->getRow()][$coordinate->getColumn()];
+        $cell = $this->getCell($coordinate);
 
         $this->cells[$coordinate->getRow()][$coordinate->getColumn()] = $cell->guess();
+
+        $this->record(new GuessWasMade($this->getCell($coordinate), $coordinate));
     }
 
     public function getCell(Coordinate $coordinate): Cell
