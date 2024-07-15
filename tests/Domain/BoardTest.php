@@ -4,6 +4,7 @@ namespace Tests\Battleship\Domain;
 
 use Battleship\Domain\Board;
 use Battleship\Domain\Coordinate;
+use Battleship\Domain\GuessWasMade;
 use Battleship\Domain\Ship;
 use PHPUnit\Framework\TestCase;
 
@@ -58,5 +59,27 @@ class BoardTest extends TestCase
         $ship2->place([new Coordinate(0, 0), new Coordinate(0, 1)]);
 
         $board->placeShip($ship2);
+    }
+
+    public function test_guess_was_made_recorded(): void
+    {
+        $board = new Board();
+
+        $events = $board->recordedMessages();
+
+        $this->assertCount(0, $events);
+
+        $board->guess(new Coordinate(0, 0));
+
+        $events = $board->recordedMessages();
+
+        $this->assertCount(1, $events);
+
+        $event = $events[0];
+        $this->assertInstanceOf(GuessWasMade::class, $event);
+
+        $this->assertFalse($event->isAHit());
+
+        $this->assertTrue($event->getCoordinate()->matches(new Coordinate(0, 0)));
     }
 }

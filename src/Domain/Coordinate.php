@@ -27,6 +27,11 @@ class Coordinate
         return $this->column;
     }
 
+    public function matches(Coordinate $coordinate): bool
+    {
+        return $this->row === $coordinate->row && $this->column === $coordinate->column;
+    }
+
     private function isWithinRange(int $value): bool
     {
         return $value >= 0 && $value < Board::SIZE;
