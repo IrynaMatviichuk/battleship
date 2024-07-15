@@ -6,7 +6,7 @@ class GuessWasMade
 {
     public function __construct(
         private readonly Cell $cell,
-        private  readonly Coordinate $coordinate,
+        private readonly Coordinate $coordinate,
     ) {}
 
     public function isAHit(): bool

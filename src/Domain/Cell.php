@@ -2,16 +2,20 @@
 
 namespace Battleship\Domain;
 
-use http\Exception\InvalidArgumentException;
-
 class Cell
 {
+    private Coordinate $coordinate;
     private bool $occupied = false;
     private ?bool $guessed = null;
 
+    public function __construct(Coordinate $coordinate)
+    {
+        $this->coordinate = $coordinate;
+    }
+
     public function guess(): Cell
     {
-        $cell = new Cell();
+        $cell = new Cell($this->coordinate);
         $cell->occupied = $this->occupied;
         $cell->guessed = $this->occupied;
 
@@ -24,7 +28,7 @@ class Cell
             throw new \InvalidArgumentException();
         }
 
-        $cell = new Cell();
+        $cell = new Cell($this->coordinate);
         $cell->occupied = true;
 
         return $cell;
@@ -38,5 +42,15 @@ class Cell
     public function isOccupied(): bool
     {
         return $this->occupied;
+    }
+
+    public function getRow(): int
+    {
+        return $this->coordinate->getRow();
+    }
+
+    public function getColumn(): int
+    {
+        return $this->coordinate->getColumn();
     }
 }

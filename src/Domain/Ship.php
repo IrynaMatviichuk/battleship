@@ -6,25 +6,29 @@ class Ship
 {
     private int $size;
 
-    /** @var Coordinate[] $coordinates */
-    private array $coordinates;
+    /** @var Cell[] cells */
+    private array $cells;
 
     public function __construct(int $size)
     {
         $this->size = $size;
     }
 
-    public function place(array $coordinates): void
+    public function place(array $cells): void
     {
-        if (count($coordinates) !== $this->size) {
+        if (count($cells) !== $this->size) {
             throw new \InvalidArgumentException();
         }
 
-        $this->coordinates = $coordinates;
+        $occupiedCells = array_map(function (Cell $cell) {
+            return $cell->occupy();
+        }, $cells);
+
+        $this->cells = $occupiedCells;
     }
 
-    public function getCoordinates(): array
+    public function getCells(): array
     {
-        return $this->coordinates;
+        return $this->cells;
     }
 }

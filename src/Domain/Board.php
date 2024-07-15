@@ -22,7 +22,7 @@ class Board
 
             foreach (range(0, self::SIZE - 1) as $column)
             {
-                $this->cells[$row][$column] = new Cell();
+                $this->cells[$row][$column] = new Cell(new Coordinate($row, $column));
             }
         }
     }
@@ -41,12 +41,25 @@ class Board
         return $this->cells[$coordinate->getRow()][$coordinate->getColumn()];
     }
 
-    public function placeShip(Ship $ship): void
+    public function getCells(array $coordinates): array
     {
-        foreach ($ship->getCoordinates() as $coordinate) {
-            $cell = $this->getCell($coordinate);
+        $cells = [];
 
-            $this->cells[$coordinate->getRow()][$coordinate->getColumn()] = $cell->occupy();
+        foreach ($coordinates as $coordinate) {
+            $cells[] = $this->getCell($coordinate);
+        }
+
+        return $cells;
+    }
+
+    public function placeShip(Ship $ship, array $coordinates): void
+    {
+        $cells = $this->getCells($coordinates);
+
+        $ship->place($cells);
+
+        foreach ($ship->getCells() as $occupiedCell) {
+            $this->cells[$occupiedCell->getRow()][$occupiedCell->getColumn()] = $occupiedCell;
         }
     }
 }
