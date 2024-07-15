@@ -3,6 +3,7 @@
 namespace Tests\Battleship\Domain;
 
 use Battleship\Domain\Board;
+use Battleship\Domain\Cell;
 use Battleship\Domain\Coordinate;
 use Battleship\Domain\GuessWasMade;
 use Battleship\Domain\Ship;
@@ -33,9 +34,11 @@ class BoardTest extends TestCase
         $board = new Board();
 
         $ship = new Ship(2);
-        $ship->place([new Coordinate(0, 0), new Coordinate(0, 1)]);
 
-        $board->placeShip($ship);
+        $board->placeShip($ship, [
+            new Coordinate(0, 0),
+            new Coordinate(0, 1),
+        ]);
 
         $board->guess(new Coordinate(0, 0));
 
@@ -51,14 +54,18 @@ class BoardTest extends TestCase
         $board = new Board();
 
         $ship = new Ship(2);
-        $ship->place([new Coordinate(0, 0), new Coordinate(0, 1)]);
 
-        $board->placeShip($ship);
+        $board->placeShip($ship, [
+            new Coordinate(0, 0),
+            new Coordinate(0, 1),
+        ]);
 
         $ship2 = new Ship(2);
-        $ship2->place([new Coordinate(0, 0), new Coordinate(0, 1)]);
 
-        $board->placeShip($ship2);
+        $board->placeShip($ship2, [
+            new Coordinate(0, 0),
+            new Coordinate(0, 1),
+        ]);
     }
 
     public function test_guess_was_made_recorded(): void
