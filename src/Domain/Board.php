@@ -9,11 +9,14 @@ class Board
     use EventRecorder;
 
     public const SIZE = 10;
+    public readonly int $id;
 
     private \SplFixedArray $cells;
 
-    public function __construct()
+    public function __construct(int $id)
     {
+        $this->id = $id;
+
         $this->cells = new \SplFixedArray(self::SIZE);
 
         foreach (range(0, self::SIZE - 1) as $row)
@@ -22,7 +25,8 @@ class Board
 
             foreach (range(0, self::SIZE - 1) as $column)
             {
-                $this->cells[$row][$column] = new Cell(new Coordinate($row, $column));
+                $id = self::SIZE * $row + $column + 1;
+                $this->cells[$row][$column] = new Cell($id, new Coordinate($row, $column));
             }
         }
     }
@@ -54,12 +58,19 @@ class Board
 
     public function placeShip(Ship $ship, array $coordinates): void
     {
+        if ($ship->boardId !== $this->id) {
+            throw new \InvalidArgumentException();
+        }
+
+        if ($ship->size !== count($coordinates)) {
+            throw new \InvalidArgumentException();
+        }
+
         $cells = $this->getCells($coordinates);
 
-        $ship->place($cells);
-
-        foreach ($ship->getCells() as $occupiedCell) {
-            $this->cells[$occupiedCell->getRow()][$occupiedCell->getColumn()] = $occupiedCell;
+        /** @var Cell $cell */
+        foreach ($cells as $cell) {
+            $this->cells[$cell->getRow()][$cell->getColumn()] = $cell->occupy($ship->id);
         }
     }
 }
