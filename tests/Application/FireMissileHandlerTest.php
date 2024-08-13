@@ -13,7 +13,7 @@ class FireMissileHandlerTest extends TestCase
 {
     public function test_it_records_guess_was_made(): void
     {
-        $board = new Board();
+        $board = new Board(1);
         $boards = new InMemoryBoardRepository([$board]);
 
         $command = new FireMissile(new Coordinate(0, 0), 0);

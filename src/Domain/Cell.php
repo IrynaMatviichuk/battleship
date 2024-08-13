@@ -4,32 +4,34 @@ namespace Battleship\Domain;
 
 class Cell
 {
+    public readonly int $id;
+    private ?int $shipId = null;
     private Coordinate $coordinate;
-    private bool $occupied = false;
     private ?bool $guessed = null;
 
-    public function __construct(Coordinate $coordinate)
+    public function __construct(int $id, Coordinate $coordinate)
     {
+        $this->id = $id;
         $this->coordinate = $coordinate;
     }
 
     public function guess(): Cell
     {
-        $cell = new Cell($this->coordinate);
-        $cell->occupied = $this->occupied;
-        $cell->guessed = $this->occupied;
+        $cell = new Cell($this->id, $this->coordinate);
+        $cell->shipId = $this->shipId;
+        $cell->guessed = $this->shipId !== null;
 
         return $cell;
     }
 
-    public function occupy(): Cell
+    public function occupy(int $shipId): Cell
     {
-        if ($this->occupied) {
+        if ($this->shipId !== null) {
             throw new \InvalidArgumentException();
         }
 
-        $cell = new Cell($this->coordinate);
-        $cell->occupied = true;
+        $cell = new Cell($this->id, $this->coordinate);
+        $cell->shipId = $shipId;
 
         return $cell;
     }
@@ -41,7 +43,7 @@ class Cell
 
     public function isOccupied(): bool
     {
-        return $this->occupied;
+        return $this->shipId !== null;
     }
 
     public function getRow(): int

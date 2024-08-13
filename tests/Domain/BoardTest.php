@@ -15,12 +15,12 @@ class BoardTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
 
-        new Board();
+        new Board(1);
     }
 
     public function test_guess_is_miss(): void
     {
-        $board = new Board();
+        $board = new Board(1);
 
         $board->guess(new Coordinate(3, 4));
 
@@ -31,9 +31,9 @@ class BoardTest extends TestCase
 
     public function test_guess_is_hit(): void
     {
-        $board = new Board();
+        $board = new Board(1);
 
-        $ship = new Ship(2);
+        $ship = new Ship(1, $board->id, 2);
 
         $board->placeShip($ship, [
             new Coordinate(0, 0),
@@ -51,16 +51,16 @@ class BoardTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $board = new Board();
+        $board = new Board(1);
 
-        $ship = new Ship(2);
+        $ship = new Ship(1, $board->id, 2);
 
         $board->placeShip($ship, [
             new Coordinate(0, 0),
             new Coordinate(0, 1),
         ]);
 
-        $ship2 = new Ship(2);
+        $ship2 = new Ship(2, $board->id, 2);
 
         $board->placeShip($ship2, [
             new Coordinate(0, 0),
@@ -68,9 +68,36 @@ class BoardTest extends TestCase
         ]);
     }
 
+    public function test_it_throws_on_foreign_ship(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $board1 = new Board(1);
+        $ship1 = new Ship(1, $board1->id, 2);
+
+        $board2 = new Board(2);
+
+        $board2->placeShip($ship1, [
+            new Coordinate(0, 0),
+            new Coordinate(0, 1),
+        ]);
+    }
+
+    public function test_it_throws_in_wrong_size(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $board = new Board(1);
+        $ship = new Ship(1, $board->id, 2);
+
+        $board->placeShip($ship, [
+            new Coordinate(0, 0),
+        ]);
+    }
+
     public function test_guess_was_made_recorded(): void
     {
-        $board = new Board();
+        $board = new Board(1);
 
         $events = $board->recordedMessages();
 

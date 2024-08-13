@@ -10,6 +10,8 @@ class InMemoryBoardRepository implements BoardRepository
     public function __construct(private array $boards) {}
     public function findById(int $boardId): Board
     {
-        return $this->boards[$boardId];
+        $key = array_search($boardId, array_column($this->boards, 'id'));
+
+        return $this->boards[$key];
     }
 }
