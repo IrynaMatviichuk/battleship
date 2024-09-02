@@ -7,11 +7,15 @@ use Battleship\Domain\BoardRepository;
 
 class InMemoryBoardRepository implements BoardRepository
 {
-    public function __construct(private array $boards) {}
+    private array $boards;
+    public function __construct(array $boards) {
+        foreach ($boards as $board) {
+            $this->boards[$board->id] = $board;
+        }
+    }
+
     public function findById(int $boardId): Board
     {
-        $key = array_search($boardId, array_column($this->boards, 'id'));
-
-        return $this->boards[$key];
+        return $this->boards[$boardId];
     }
 }
