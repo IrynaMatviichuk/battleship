@@ -31,11 +31,10 @@ class Board
         }
     }
 
-    public function guess(Coordinate $coordinate): bool
+    public function guess(Coordinate $coordinate): void
     {
         $cell = $this->getCell($coordinate);
-
-        $this->cells[$coordinate->getRow()][$coordinate->getColumn()] = $cell->guess();
+        $cell->guess();
 
         $this->record(
             new GuessWasMade(
@@ -77,7 +76,7 @@ class Board
 
         /** @var Cell $cell */
         foreach ($cells as $cell) {
-            $this->cells[$cell->getRow()][$cell->getColumn()] = $cell->occupy($ship->id);
+            $cell->occupy($ship->id);
         }
     }
 }

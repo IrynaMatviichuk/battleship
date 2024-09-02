@@ -47,6 +47,16 @@ class BoardTest extends TestCase
         $this->assertTrue($cell->isGuessed());
     }
 
+    public function test_it_throws_on_second_guess(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $board = new Board(1);
+
+        $board->guess(new Coordinate(0, 0));
+        $board->guess(new Coordinate(0, 0));
+    }
+
     public function test_it_throws_on_collision(): void
     {
         $this->expectException(\InvalidArgumentException::class);

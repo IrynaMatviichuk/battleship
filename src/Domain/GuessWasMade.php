@@ -11,16 +11,6 @@ class GuessWasMade
         private readonly ?int $shipId,
     ) {}
 
-    public static function fromCell(Cell $cell): self
-    {
-        return new GuessWasMade(
-            $cell->id,
-            $cell->getCoordinate(),
-            $cell->isGuessed(),
-            $cell->getShipId(),
-        );
-    }
-
     public function isAHit(): bool
     {
         return $this->isAHit;
@@ -31,8 +21,8 @@ class GuessWasMade
         return $this->coordinate;
     }
 
-    public function getShipId(): ?int
-    {
-        return $this->shipId;
-    }
+//    public function getShipId(): ?int
+//    {
+//        return $this->shipId;
+//    }
 }
