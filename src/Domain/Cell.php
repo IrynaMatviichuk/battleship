@@ -2,8 +2,12 @@
 
 namespace Battleship\Domain;
 
+use Battleship\Shared\EventRecorder;
+
 class Cell
 {
+    use EventRecorder;
+
     public readonly int $id;
     private ?int $shipId = null;
     private Coordinate $coordinate;
@@ -15,7 +19,7 @@ class Cell
         $this->coordinate = $coordinate;
     }
 
-    public function guess(): Cell
+    public function guess(): bool
     {
         $cell = new Cell($this->id, $this->coordinate);
         $cell->shipId = $this->shipId;
@@ -54,5 +58,15 @@ class Cell
     public function getColumn(): int
     {
         return $this->coordinate->getColumn();
+    }
+
+    public function getCoordinate(): Coordinate
+    {
+        return $this->coordinate;
+    }
+
+    public function getShipId(): ?int
+    {
+        return $this->shipId;
     }
 }

@@ -31,13 +31,20 @@ class Board
         }
     }
 
-    public function guess(Coordinate $coordinate): void
+    public function guess(Coordinate $coordinate): bool
     {
         $cell = $this->getCell($coordinate);
 
         $this->cells[$coordinate->getRow()][$coordinate->getColumn()] = $cell->guess();
 
-        $this->record(new GuessWasMade($this->getCell($coordinate), $coordinate));
+        $this->record(
+            new GuessWasMade(
+                $cell->id,
+                $coordinate,
+                $cell->isGuessed(),
+                $cell->getShipId(),
+            ),
+        );
     }
 
     public function getCell(Coordinate $coordinate): Cell
