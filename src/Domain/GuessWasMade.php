@@ -20,9 +20,4 @@ class GuessWasMade
     {
         return $this->coordinate;
     }
-
-//    public function getShipId(): ?int
-//    {
-//        return $this->shipId;
-//    }
 }
