@@ -8,6 +8,7 @@ use Battleship\Domain\BoardRepository;
 class InMemoryBoardRepository implements BoardRepository
 {
     private array $boards;
+
     public function __construct(array $boards) {
         foreach ($boards as $board) {
             $this->boards[$board->id] = $board;

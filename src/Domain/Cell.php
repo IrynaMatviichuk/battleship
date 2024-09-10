@@ -21,48 +21,27 @@ class Cell
 
     public function guess(): bool
     {
-        $cell = new Cell($this->id, $this->coordinate);
-        $cell->shipId = $this->shipId;
-        $cell->guessed = $this->shipId !== null;
+        if ($this->guessed !== null) {
+            throw new \InvalidArgumentException();
+        }
 
-        return $cell;
+        $this->guessed = $this->shipId !== null;
+
+        return $this->guessed;
     }
 
-    public function occupy(int $shipId): Cell
+    public function occupy(int $shipId): void
     {
         if ($this->shipId !== null) {
             throw new \InvalidArgumentException();
         }
 
-        $cell = new Cell($this->id, $this->coordinate);
-        $cell->shipId = $shipId;
-
-        return $cell;
+        $this->shipId = $shipId;
     }
 
     public function isGuessed(): ?bool
     {
         return $this->guessed;
-    }
-
-    public function isOccupied(): bool
-    {
-        return $this->shipId !== null;
-    }
-
-    public function getRow(): int
-    {
-        return $this->coordinate->getRow();
-    }
-
-    public function getColumn(): int
-    {
-        return $this->coordinate->getColumn();
-    }
-
-    public function getCoordinate(): Coordinate
-    {
-        return $this->coordinate;
     }
 
     public function getShipId(): ?int
