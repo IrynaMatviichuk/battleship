@@ -3,7 +3,6 @@
 namespace Tests\Battleship\Domain;
 
 use Battleship\Domain\Board;
-use Battleship\Domain\Cell;
 use Battleship\Domain\Coordinate;
 use Battleship\Domain\GuessWasMade;
 use Battleship\Domain\Ship;
