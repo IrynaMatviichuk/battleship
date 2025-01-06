@@ -35,7 +35,7 @@ class FireMissileHandlerTest extends TestCase
 
     public function test_it_records_successful_guess(): void
     {
-        $board = new Board(1);
+        $board = new Board('1');
         $ship = new Ship(1, $board->id, 2);
         $board->placeShip($ship, [
             new Coordinate(0, 0),

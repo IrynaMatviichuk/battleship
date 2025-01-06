@@ -9,11 +9,11 @@ class Board
     use EventRecorder;
 
     public const SIZE = 10;
-    public readonly int $id;
+    public readonly string $id;
 
     private \SplFixedArray $cells;
 
-    public function __construct(int $id)
+    public function __construct(string $id)
     {
         $this->id = $id;
 
