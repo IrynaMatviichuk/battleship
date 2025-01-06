@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Battleship\Application;
+namespace Tests\Battleship\Domain;
 
 use Battleship\Domain\BattleHasBegun;
 use Battleship\Domain\Board;

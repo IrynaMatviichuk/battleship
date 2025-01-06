@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Battleship\Application;
+namespace Tests\Battleship\Domain;
 
 use Battleship\Application\FireMissile;
 use Battleship\Application\FireMissileHandler;

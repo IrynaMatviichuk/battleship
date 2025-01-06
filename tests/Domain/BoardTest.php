@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Battleship\Application;
+namespace Tests\Battleship\Domain;
 
 use Battleship\Domain\Board;
 use Battleship\Domain\Coordinate;
