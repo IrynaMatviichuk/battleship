@@ -9,7 +9,7 @@ class InMemoryBoardRepository implements BoardRepository
 {
     private array $boards;
 
-    public function __construct(array $boards) {
+    public function __construct(array $boards = []) {
         foreach ($boards as $board) {
             $this->boards[$board->id] = $board;
         }
@@ -18,5 +18,10 @@ class InMemoryBoardRepository implements BoardRepository
     public function findById(int $boardId): Board
     {
         return $this->boards[$boardId];
+    }
+
+    public function add(Board $board): void
+    {
+        $this->boards[$board->id] = $board;
     }
 }
