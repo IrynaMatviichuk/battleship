@@ -34,6 +34,6 @@ class Coordinate
 
     private function isWithinRange(int $value): bool
     {
-        return $value >= 0 && $value < Board::SIZE;
+        return $value >= 0 && $value < Board::DEFAULT_SIZE;
     }
 }
