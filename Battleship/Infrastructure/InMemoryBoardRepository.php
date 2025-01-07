@@ -15,7 +15,7 @@ class InMemoryBoardRepository implements BoardRepository
         }
     }
 
-    public function findById(int $boardId): Board
+    public function findById(string $boardId): Board
     {
         return $this->boards[$boardId];
     }
