@@ -3,17 +3,30 @@
 namespace Battleship\Domain;
 
 use Battleship\Shared\EventRecorder;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Id;
 
+#[Entity]
 class Cell
 {
     use EventRecorder;
 
-    public readonly int $id;
+    #[Id, Column(type: 'string', unique: true)]
+    public readonly string $id;
+
+//    #[ManyToOne(targetEntity: 'Ship', cascade: ['all'], fetch: 'EAGER')]
+//    private ?Ship $ship;
+
     private ?int $shipId = null;
+
+    #[Column(type: 'coordinate')]
     private Coordinate $coordinate;
+
+    #[Column(type: 'boolean', nullable: true)]
     private ?bool $guessed = null;
 
-    public function __construct(int $id, Coordinate $coordinate)
+    public function __construct(string $id, Coordinate $coordinate)
     {
         $this->id = $id;
         $this->coordinate = $coordinate;
