@@ -3,10 +3,10 @@
 namespace Battleship\Application;
 
 use Battleship\Domain\Board;
-use Battleship\Domain\Cell;
-use Battleship\Domain\Coordinate;
 use Battleship\Domain\BoardRepository;
+use Battleship\Domain\Cell;
 use Battleship\Domain\CellRepository;
+use Battleship\Domain\Coordinate;
 
 class StartGameHandler
 {

@@ -20,7 +20,6 @@ class CoordinateType extends Type
         list($row, $column) = sscanf($value, 'COORDINATE(%f %f)');
 
         return new Coordinate($row, $column);
-
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
