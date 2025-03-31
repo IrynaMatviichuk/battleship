@@ -16,7 +16,7 @@ class StartGameHandler
     public function handle(StartGame $command): void
     {
         $board = new Board($command->boardId);
-//
+
         $this->boards->add($board);
     }
 }
