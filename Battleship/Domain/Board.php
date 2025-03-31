@@ -3,9 +3,13 @@
 namespace Battleship\Domain;
 
 use Battleship\Shared\EventRecorder;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\OneToMany;
+use Illuminate\Support\Str;
 
 #[Entity]
 class Board
@@ -20,25 +24,28 @@ class Board
     #[Column(type: "integer")]
     public readonly int $size;
 
-    private \SplFixedArray $cells;
+    #[OneToMany(mappedBy: 'board', targetEntity: Cell::class, cascade: ['persist'])]
+    private Collection $cells;
 
     public function __construct(string $id)
     {
         $this->id = $id;
         $this->size = self::DEFAULT_SIZE;
 
-        $this->cells = new \SplFixedArray(self::DEFAULT_SIZE);
+        $this->cells = new ArrayCollection();
 
         foreach (range(0, self::DEFAULT_SIZE - 1) as $row)
         {
-            $this->cells[$row] = new \SplFixedArray(self::DEFAULT_SIZE);
-
             foreach (range(0, self::DEFAULT_SIZE - 1) as $column)
             {
-                $id = self::DEFAULT_SIZE * $row + $column + 1;
-                $this->cells[$row][$column] = new Cell($id, new Coordinate($row, $column));
+                $this->cells[] = new Cell(Str::uuid(), $this, new Coordinate($row, $column));
             }
         }
+    }
+
+    public function getAllCells()
+    {
+        return $this->cells;
     }
 
     public function guess(Coordinate $coordinate): void
@@ -58,7 +65,13 @@ class Board
 
     public function getCell(Coordinate $coordinate): Cell
     {
-        return $this->cells[$coordinate->getRow()][$coordinate->getColumn()];
+        foreach ($this->cells as $cell) {
+            if ($cell->hasCoordinate($coordinate)) {
+                return $cell;
+            }
+        }
+
+        throw new \InvalidArgumentException('Cell not found');
     }
 
     public function getCells(array $coordinates): array
