@@ -2,19 +2,18 @@
 
 namespace App\Console\Commands;
 
-use Battleship\Application\StartGame as StartGameCommand;
+use Battleship\Application\MakeGuess as MakeGuessCommand;
 use Battleship\Shared\CommandBus;
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 
-class StartGame extends Command
+class MakeGuess extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'game:start';
+    protected $signature = 'game:make-guess {boardId} {row} {column}';
 
     /**
      * The console command description.
@@ -25,7 +24,11 @@ class StartGame extends Command
 
     public function handle(CommandBus $commandBus): void
     {
-        $command = new StartGameCommand([Str::uuid(), Str::uuid()]);
+        $boardId = $this->argument('boardId');
+        $row = (int)$this->argument('row');
+        $column = (int)$this->argument('column');
+
+        $command = new MakeGuessCommand($boardId, $row, $column);
 
         $commandBus->handle($command);
     }

@@ -4,5 +4,5 @@ namespace Battleship\Domain;
 
 interface ShipRepository
 {
-    public function findById(int $shipId): Ship;
+    public function findById(string $shipId): Ship;
 }

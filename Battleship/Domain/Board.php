@@ -18,14 +18,19 @@ class Board
 
     public const DEFAULT_SIZE = 10;
 
+    public const SHIP_SIZES = [5, 4, 3, 3, 2];
+
     #[Id, Column(type: "string", unique: true)]
     public readonly string $id;
 
     #[Column(type: "integer")]
     public readonly int $size;
 
-    #[OneToMany(mappedBy: 'board', targetEntity: Cell::class, cascade: ['persist'])]
+    #[OneToMany(targetEntity: Cell::class, mappedBy: 'board', cascade: ['persist'])]
     private Collection $cells;
+
+    #[OneToMany(targetEntity: Ship::class, mappedBy: 'board', cascade: ['persist'])]
+    private Collection $ships;
 
     public function __construct(string $id)
     {
@@ -33,6 +38,7 @@ class Board
         $this->size = self::DEFAULT_SIZE;
 
         $this->cells = new ArrayCollection();
+        $this->ships = new ArrayCollection();
 
         foreach (range(0, self::DEFAULT_SIZE - 1) as $row)
         {
@@ -40,6 +46,10 @@ class Board
             {
                 $this->cells[] = new Cell(Str::uuid(), $this, new Coordinate($row, $column));
             }
+        }
+
+        foreach (self::SHIP_SIZES as $size) {
+            $this->ships[] = new Ship(Str::uuid(), $this, $size);
         }
     }
 
@@ -58,13 +68,19 @@ class Board
                 $cell->id,
                 $coordinate,
                 $cell->isGuessed(),
-                $cell->getShipId(),
+                $cell->getShip(),
             ),
         );
     }
 
     public function getCell(Coordinate $coordinate): Cell
     {
+        dd($this->ships->toArray());
+        dd($this->cells->toArray());
+//        $cell = $this->cells->findFirst(function ($key, Cell $cell) use($coordinate) {
+//          return $cell->hasCoordinate($coordinate);
+//        });
+
         foreach ($this->cells as $cell) {
             if ($cell->hasCoordinate($coordinate)) {
                 return $cell;
@@ -87,7 +103,7 @@ class Board
 
     public function placeShip(Ship $ship, array $coordinates): void
     {
-        if ($ship->boardId !== $this->id) {
+        if ($ship->board->id !== $this->id) {
             throw new \InvalidArgumentException();
         }
 
@@ -99,7 +115,7 @@ class Board
 
         /** @var Cell $cell */
         foreach ($cells as $cell) {
-            $cell->occupy($ship->id);
+            $cell->occupy($ship);
         }
     }
 }
