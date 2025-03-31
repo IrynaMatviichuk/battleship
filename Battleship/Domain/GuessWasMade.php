@@ -5,7 +5,7 @@ namespace Battleship\Domain;
 class GuessWasMade
 {
     public function __construct(
-        private readonly int $cellId,
+        private readonly string $cellId,
         private readonly Coordinate $coordinate,
         private readonly bool $isAHit,
         private readonly ?int $shipId,

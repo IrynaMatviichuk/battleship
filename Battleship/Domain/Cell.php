@@ -6,6 +6,7 @@ use Battleship\Shared\EventRecorder;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToOne;
 
 #[Entity]
 class Cell
@@ -26,10 +27,19 @@ class Cell
     #[Column(type: 'boolean', nullable: true)]
     private ?bool $guessed = null;
 
-    public function __construct(string $id, Coordinate $coordinate)
+    #[ManyToOne(inversedBy: 'cells', targetEntity: Board::class)]
+    private Board $board;
+
+    public function __construct(string $id, Board $board, Coordinate $coordinate)
     {
         $this->id = $id;
+        $this->board = $board;
         $this->coordinate = $coordinate;
+    }
+
+    public function hasCoordinate(Coordinate $coordinate): bool
+    {
+        return $coordinate->matches($this->coordinate);
     }
 
     public function guess(): bool

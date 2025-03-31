@@ -31,6 +31,5 @@ class DoctrineBoardRepository implements BoardRepository
     public function add(Board $board): void
     {
         $this->entityManager->persist($board);
-        $this->entityManager->flush();
     }
 }

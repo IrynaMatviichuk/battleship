@@ -13,5 +13,7 @@ class FireMissileHandler
         $board = $this->boards->findById($command->boardId);
 
         $board->guess($command->coordinate);
+
+        $this->boards->add($board);
     }
 }
