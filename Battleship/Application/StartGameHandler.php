@@ -4,7 +4,6 @@ namespace Battleship\Application;
 
 use Battleship\Domain\Board;
 use Battleship\Domain\BoardRepository;
-use Battleship\Domain\Coordinate;
 
 class StartGameHandler
 {
@@ -15,8 +14,10 @@ class StartGameHandler
 
     public function handle(StartGame $command): void
     {
-        $board = new Board($command->boardId);
+        foreach ($command->boardIds as $boardId) {
+            $board = new Board($boardId);
 
-        $this->boards->add($board);
+            $this->boards->add($board);
+        }
     }
 }

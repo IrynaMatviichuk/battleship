@@ -2,7 +2,6 @@
 
 namespace Battleship\Shared\Messaging;
 
-use Battleship\Shared\CommandBus;
 use Battleship\Shared\Middleware;
 use Psr\Container\ContainerInterface;
 

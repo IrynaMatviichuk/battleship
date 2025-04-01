@@ -2,18 +2,32 @@
 
 namespace Battleship\Domain;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToOne;
+
+#[Entity]
 class Ship
 {
-    public readonly int $id;
+    #[Id, Column(type: "string", unique: true)]
+    public readonly string $id;
 
-    public readonly string $boardId;
+    #[ManyToOne(targetEntity: Board::class, inversedBy: 'ships')]
+    public readonly Board $board;
 
+    #[Column(type: "integer")]
     public readonly int $size;
 
-    public function __construct(int $id, string $boardId, int $size)
+    #[OneToMany(targetEntity: Cell::class, mappedBy: 'ship', cascade: ['persist'])]
+    private Collection $cells;
+
+    public function __construct(string $id, Board $board, int $size)
     {
         $this->id = $id;
-        $this->boardId = $boardId;
+        $this->board = $board;
         $this->size = $size;
     }
 }
