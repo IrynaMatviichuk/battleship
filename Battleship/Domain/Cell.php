@@ -48,6 +48,8 @@ class Cell
 
         $this->guessed = $this->ship !== null;
 
+        $this->ship?->checkHasSunk();
+
         return $this->guessed;
     }
 
