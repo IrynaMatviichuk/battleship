@@ -32,7 +32,7 @@ class BoardTest extends TestCase
     {
         $board = new Board(1);
 
-        $ship = new Ship(1, $board->id, 2);
+        $ship = new Ship(1, $board, 2);
 
         $board->placeShip($ship, [
             new Coordinate(0, 0),
@@ -62,14 +62,14 @@ class BoardTest extends TestCase
 
         $board = new Board(1);
 
-        $ship = new Ship(1, $board->id, 2);
+        $ship = new Ship(1, $board, 2);
 
         $board->placeShip($ship, [
             new Coordinate(0, 0),
             new Coordinate(0, 1),
         ]);
 
-        $ship2 = new Ship(2, $board->id, 2);
+        $ship2 = new Ship(2, $board, 2);
 
         $board->placeShip($ship2, [
             new Coordinate(0, 0),
@@ -82,7 +82,7 @@ class BoardTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $board1 = new Board(1);
-        $ship1 = new Ship(1, $board1->id, 2);
+        $ship1 = new Ship(1, $board1, 2);
 
         $board2 = new Board(2);
 
@@ -97,7 +97,7 @@ class BoardTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $board = new Board(1);
-        $ship = new Ship(1, $board->id, 2);
+        $ship = new Ship(1, $board, 2);
 
         $board->placeShip($ship, [
             new Coordinate(0, 0),
