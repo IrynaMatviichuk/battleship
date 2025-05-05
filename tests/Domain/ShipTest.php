@@ -18,7 +18,6 @@ class ShipTest extends  TestCase
         $cell2 = new Cell('cell_id_2', $board, new Coordinate(3, 5));
         $cell3 = new Cell('cell_id_3', $board, new Coordinate(3, 6));
 
-
         $ship = new Ship('ship_id', $board, 3);
 
         $cell1->occupy($ship);
