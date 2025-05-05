@@ -36,7 +36,8 @@ class FireMissileHandlerTest extends TestCase
     public function test_it_records_successful_guess(): void
     {
         $board = new Board('1');
-        $ship = new Ship(1, $board->id, 2);
+        $ship = new Ship('1', $board, 2);
+
         $board->placeShip($ship, [
             new Coordinate(0, 0),
             new Coordinate(0, 1),
@@ -62,8 +63,9 @@ class FireMissileHandlerTest extends TestCase
 
     public function test_it_records_unsuccessful_guess(): void
     {
-        $board = new Board(1);
-        $ship = new Ship(1, $board->id, 2);
+        $board = new Board('1');
+        $ship = new Ship(1, $board, 2);
+
         $board->placeShip($ship, [
             new Coordinate(0, 0),
             new Coordinate(0, 1),

@@ -15,9 +15,10 @@ class GameTest extends TestCase
 {
     public function test_player_can_hit_ship(): void
     {
+        $board1 = new Board('1');
         $boards = [
-            1 => new Board(1),
-            2 => new Board(2),
+            1 => $board1,
+            2 => new Board('2'),
         ];
 
         $players = [
@@ -27,7 +28,7 @@ class GameTest extends TestCase
 
         $game = new Game($boards, $players);
 
-        $ship = new Ship(1, 1, 3);
+        $ship = new Ship('1', $board1, 3);
 
         $game->placeShip(
             1,
@@ -81,9 +82,10 @@ class GameTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
+        $board1 = new Board('1');
         $boards = [
-            1 => new Board(1),
-            2 => new Board(2),
+            1 => $board1,
+            2 => new Board('2'),
         ];
 
         $players = [
@@ -96,7 +98,7 @@ class GameTest extends TestCase
         $game->markPlayerReady(1);
         $game->markPlayerReady(2);
 
-        $ship = new Ship(1, 1, 3);
+        $ship = new Ship('1', $board1, 3);
 
         $game->placeShip(
             1,
