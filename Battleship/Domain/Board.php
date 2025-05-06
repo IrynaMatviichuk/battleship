@@ -75,19 +75,15 @@ class Board
 
     public function getCell(Coordinate $coordinate): Cell
     {
-        dd($this->ships->toArray());
-        dd($this->cells->toArray());
-//        $cell = $this->cells->findFirst(function ($key, Cell $cell) use($coordinate) {
-//          return $cell->hasCoordinate($coordinate);
-//        });
+        $cell = $this->cells->findFirst(function ($key, Cell $cell) use($coordinate) {
+          return $cell->hasCoordinate($coordinate);
+        });
 
-        foreach ($this->cells as $cell) {
-            if ($cell->hasCoordinate($coordinate)) {
-                return $cell;
-            }
+        if (!$cell) {
+            throw new \InvalidArgumentException('Cell not found');
         }
 
-        throw new \InvalidArgumentException('Cell not found');
+        return $cell;
     }
 
     public function getCells(array $coordinates): array
