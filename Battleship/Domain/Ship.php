@@ -4,6 +4,7 @@ namespace Battleship\Domain;
 
 use Battleship\Shared\EventRecorder;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
@@ -31,16 +32,15 @@ class Ship
         $this->id = $id;
         $this->board = $board;
         $this->size = $size;
+        $this->cells = new ArrayCollection();
     }
 
-    public function checkHasSunk(): void
+    public function hasSunk(): bool
     {
-        $guessedCellsCount = $this->cells->count(function ($key, Cell $cell) {
-           return $cell->isGuessed();
-        });
+        $guessedCellsCount = $this->cells->filter(function (Cell $cell) {
+            return $cell->isGuessed();
+        })->count();
 
-        if ($guessedCellsCount === $this->size) {
-            $this->record(new ShipHasSunk($this));
-        }
+        return $guessedCellsCount === $this->size;
     }
 }

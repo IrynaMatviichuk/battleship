@@ -63,14 +63,20 @@ class Board
         $cell = $this->getCell($coordinate);
         $cell->guess();
 
+        $ship = $cell->getShip();
+
         $this->record(
             new GuessWasMade(
                 $cell->id,
                 $coordinate,
                 $cell->isGuessed(),
-                $cell->getShip(),
+                $ship,
             ),
         );
+
+        if ($ship->hasSunk()) {
+            $this->record(new ShipHasSunk($ship->id));
+        }
     }
 
     public function getCell(Coordinate $coordinate): Cell
