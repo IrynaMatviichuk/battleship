@@ -29,7 +29,7 @@ class FireMissile extends Command
         $row = (int)$this->argument('row');
         $column = (int)$this->argument('column');
 
-        $command = new FireMissileCommand(new Coordinate($row,$column), $boardId);
+        $command = new FireMissileCommand(new Coordinate($row, $column), $boardId);
 
         $commandBus->handle($command);
     }
