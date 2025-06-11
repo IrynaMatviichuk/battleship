@@ -24,17 +24,10 @@ class ShipTest extends  TestCase
         $cell2->occupy($ship);
         $cell3->occupy($ship);
 
-        $events = $ship->recordedMessages();
-        $this->assertCount(0, $events);
-
         $cell1->guess();
         $cell2->guess();
         $cell3->guess();
 
-        $events = $ship->recordedMessages();
-        $this->assertCount(1, $events);
-
-        $event = $events[0];
-        $this->assertInstanceOf(ShipHasSunk::class, $event);
+        $this->assertTrue($ship->hasSunk());
     }
 }

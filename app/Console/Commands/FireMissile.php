@@ -14,7 +14,7 @@ class FireMissile extends Command
      *
      * @var string
      */
-    protected $signature = 'game:fire-missile {boardId}';
+    protected $signature = 'game:fire-missile {boardId} {row} {column}';
 
     /**
      * The console command description.
@@ -26,8 +26,10 @@ class FireMissile extends Command
     public function handle(CommandBus $commandBus): void
     {
         $boardId = $this->argument('boardId');
+        $row = (int)$this->argument('row');
+        $column = (int)$this->argument('column');
 
-        $command = new FireMissileCommand(new Coordinate(1,1), $boardId);
+        $command = new FireMissileCommand(new Coordinate($row,$column), $boardId);
 
         $commandBus->handle($command);
     }

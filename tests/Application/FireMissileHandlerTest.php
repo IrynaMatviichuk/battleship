@@ -112,9 +112,10 @@ class FireMissileHandlerTest extends TestCase
         $fireMissileHandler->handle($command1);
         $fireMissileHandler->handle($command2);
 
-        $this->assertCount(3, $board->recordedMessages());
-
         $events = $board->recordedMessages();
+
+        $this->assertCount(3, $events);
+
         $event = $events[0];
         $this->assertInstanceOf(GuessWasMade::class, $event);
 
