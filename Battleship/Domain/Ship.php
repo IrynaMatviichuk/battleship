@@ -37,13 +37,9 @@ class Ship
 
     public function hasSunk(): bool
     {
-        dd($this->cells->toArray());
         $guessedCellsCount = $this->cells->filter(function (Cell $cell) {
-            dd($cell->isGuessed());
             return $cell->isGuessed();
         })->count();
-
-//        var_dump($guessedCellsCount);
 
         return $guessedCellsCount === $this->size;
     }
