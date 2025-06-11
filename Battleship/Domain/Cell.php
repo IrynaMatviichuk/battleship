@@ -48,8 +48,6 @@ class Cell
 
         $this->guessed = $this->ship !== null;
 
-        $this->ship?->checkHasSunk();
-
         return $this->guessed;
     }
 
@@ -60,6 +58,8 @@ class Cell
         }
 
         $this->ship = $ship;
+
+        // $ship->addCell($cell);
     }
 
     public function isGuessed(): ?bool

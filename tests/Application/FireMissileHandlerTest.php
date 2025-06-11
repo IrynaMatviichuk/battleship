@@ -7,6 +7,7 @@ use Battleship\Application\FireMissileHandler;
 use Battleship\Domain\Board;
 use Battleship\Domain\Coordinate;
 use Battleship\Domain\GuessWasMade;
+use Battleship\Domain\ShipHasSunk;
 use Battleship\Domain\Ship;
 use Battleship\Infrastructure\InMemoryBoardRepository;
 use PHPUnit\Framework\TestCase;
@@ -87,5 +88,40 @@ class FireMissileHandlerTest extends TestCase
         $event = $events[0];
         $this->assertInstanceOf(GuessWasMade::class, $event);
         $this->assertFalse($event->isAHit());
+    }
+
+    public function test_it_records_ship_has_sunk(): void
+    {
+        $board = new Board('1');
+        $ship = new Ship(1, $board, 2);
+
+        $board->placeShip($ship, [
+            new Coordinate(0, 0),
+            new Coordinate(0, 1),
+        ]);
+
+        $boards = new InMemoryBoardRepository([$board]);
+
+        $command1 = new FireMissile(new Coordinate(0, 0), 1);
+        $command2 = new FireMissile(new Coordinate(0, 1), 1);
+
+        $fireMissileHandler = new FireMissileHandler($boards);
+
+        $this->assertEmpty($board->recordedMessages());
+
+        $fireMissileHandler->handle($command1);
+        $fireMissileHandler->handle($command2);
+
+        $this->assertCount(3, $board->recordedMessages());
+
+        $events = $board->recordedMessages();
+        $event = $events[0];
+        $this->assertInstanceOf(GuessWasMade::class, $event);
+
+        $event = $events[1];
+        $this->assertInstanceOf(GuessWasMade::class, $event);
+
+        $event = $events[2];
+        $this->assertInstanceOf(ShipHasSunk::class, $event);
     }
 }
