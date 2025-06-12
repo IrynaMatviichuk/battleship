@@ -74,7 +74,7 @@ class Board
             ),
         );
 
-        if ($ship->hasSunk()) {
+        if ($ship?->hasSunk()) {
             $this->record(new ShipHasSunk($ship->id));
         }
     }

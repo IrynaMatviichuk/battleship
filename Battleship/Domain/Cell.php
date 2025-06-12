@@ -59,7 +59,7 @@ class Cell
 
         $this->ship = $ship;
 
-        // $ship->addCell($cell);
+         $ship->addCell($this);
     }
 
     public function isGuessed(): ?bool

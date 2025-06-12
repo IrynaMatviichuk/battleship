@@ -9,7 +9,7 @@ class InMemoryShipRepository implements ShipRepository
 {
     public function __construct(private array $ships) {}
 
-    public function findById(int $shipId): Ship
+    public function findById(string $shipId): Ship
     {
         $key = array_search($shipId, array_column($this->ships, 'id'));
 

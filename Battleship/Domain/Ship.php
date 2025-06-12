@@ -43,4 +43,9 @@ class Ship
 
         return $guessedCellsCount === $this->size;
     }
+
+    public function addCell(Cell $cell): void
+    {
+        $this->cells[] = $cell;
+    }
 }
