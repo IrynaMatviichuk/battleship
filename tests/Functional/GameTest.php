@@ -64,8 +64,8 @@ class GameTest extends TestCase
         $board1GameOverEvent = $board1Events[22];
         $this->assertInstanceOf(GameOver::class, $board1GameOverEvent);
 
-        $board2Events = $board1->recordedMessages();
-        $this->assertCount(23, $board1Events);
+        $board2Events = $board2->recordedMessages();
+        $this->assertCount(23, $board2Events);
 
         $board2GameOverEvent = $board2Events[22];
         $this->assertInstanceOf(GameOver::class, $board2GameOverEvent);
