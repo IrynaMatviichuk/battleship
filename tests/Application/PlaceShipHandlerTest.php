@@ -31,8 +31,8 @@ class PlaceShipHandlerTest extends TestCase
         $cell1 = $board->getCell(new Coordinate(2, 3));
         $cell2 = $board->getCell(new Coordinate(2, 4));
 
-        $this->assertEquals($ship->id, $cell1->getShip()->id);
-        $this->assertEquals($ship->id, $cell2->getShip()->id);
+        $this->assertEquals($ship->id, $cell1->getShip());
+        $this->assertEquals($ship->id, $cell2->getShip());
     }
 
     public function test_it_places_ship_from_other_board(): void
