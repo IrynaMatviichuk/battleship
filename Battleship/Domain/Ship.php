@@ -22,10 +22,24 @@ class Ship
     #[Column(type: "integer")]
     public readonly int $size;
 
-    public function __construct(string $id, Board $board, int $size)
+    #[Column(type: 'boolean', nullable: false, options: ['default' => false])]
+    private bool $sunk;
+
+    public function __construct(string $id, Board $board, int $size, bool $sunk = false)
     {
         $this->id = $id;
         $this->board = $board;
         $this->size = $size;
+        $this->sunk = $sunk;
+    }
+
+    public function markAsSunk(): void
+    {
+        $this->sunk = true;
+    }
+
+    public function sunk(): bool
+    {
+        return $this->sunk;
     }
 }

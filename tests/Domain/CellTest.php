@@ -45,9 +45,9 @@ class CellTest extends TestCase
 
         $ship = new Ship('ship_id', $board, 3);
 
-        $cell->occupy($ship);
+        $cell->occupy($ship->id);
 
-        $this->assertEquals($ship, $cell->getShip());
+        $this->assertEquals($ship->id, $cell->getShip());
     }
 
     public function test_it_throws_when_occupied(): void
@@ -60,9 +60,11 @@ class CellTest extends TestCase
 
         $ship = new Ship('ship_id', $board, 3);
 
-        $cell->occupy($ship);
+        $cell->occupy($ship->id);
 
-        $cell->occupy(new Ship('ship_id_2', $board, 1));
+        $ship2 = new Ship('ship_id_2', $board, 1);
+
+        $cell->occupy($ship2->id);
     }
 
     public function test_it_is_not_guessed(): void
@@ -93,7 +95,7 @@ class CellTest extends TestCase
 
         $ship = new Ship('ship_id', $board, 3);
 
-        $cell->occupy($ship);
+        $cell->occupy($ship->id);
 
         $cell->guess();
 

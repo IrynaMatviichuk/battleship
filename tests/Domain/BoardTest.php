@@ -46,6 +46,28 @@ class BoardTest extends TestCase
         $this->assertTrue($cell->isGuessed());
     }
 
+    public function test_ship_was_sunk(): void
+    {
+        $board = new Board('board_id');
+
+        $ship = $board->getShips()->findFirst(function ($key, Ship $ship) {
+           return $ship->size === 3;
+        });
+
+        $board->placeShip($ship, [
+            new Coordinate(3, 4),
+            new Coordinate(3, 5),
+            new Coordinate(3, 6),
+        ]);
+
+        $board->guess(new Coordinate(3, 4));
+        $board->guess(new Coordinate(3, 5));
+        $board->guess(new Coordinate(3, 6));
+
+        $this->assertTrue($board->shipHasSunk($ship->id));
+        $this->assertTrue($ship->sunk());
+    }
+
     public function test_it_throws_on_second_guess(): void
     {
         $this->expectException(\InvalidArgumentException::class);
