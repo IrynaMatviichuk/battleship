@@ -50,7 +50,7 @@ class GameTest extends TestCase
         $this->fireMissiles($board1, $fireMissileHandler);
         $this->fireMissiles($board2, $fireMissileHandler);
 
-        foreach ($board2->getShips() as $ship) {
+        foreach ($board1->getShips() as $ship) {
             $this->assertTrue($ship->sunk());
         }
 
