@@ -53,30 +53,38 @@ class Board
         }
     }
 
-    public function getAllCells()
-    {
-        return $this->cells;
-    }
-
     public function guess(Coordinate $coordinate): void
     {
         $cell = $this->getCell($coordinate);
         $cell->guess();
 
-        $ship = $cell->getShip();
+        $shipId = $cell->getShip();
 
         $this->record(
             new GuessWasMade(
                 $cell->id,
                 $coordinate,
                 $cell->isGuessed(),
-                $ship,
+                $shipId,
             ),
         );
 
-        if ($ship?->hasSunk()) {
-            $this->record(new ShipHasSunk($ship->id));
+        if ($shipId && $this->shipHasSunk($shipId)) {
+            $this->record(new ShipHasSunk($shipId));
         }
+    }
+
+    public function shipHasSunk(string $shipId): bool
+    {
+        $cells = $this->cells->filter(function (Cell $cell) use ($shipId) {
+           return $cell->getShip() === $shipId;
+        });
+
+        $unguessedCells = $cells->filter(function (Cell $cell) {
+           return !$cell->isGuessed();
+        });
+
+        return $unguessedCells->count() === 0;
     }
 
     public function getCell(Coordinate $coordinate): Cell
@@ -117,7 +125,7 @@ class Board
 
         /** @var Cell $cell */
         foreach ($cells as $cell) {
-            $cell->occupy($ship);
+            $cell->occupy($ship->id);
         }
     }
 }

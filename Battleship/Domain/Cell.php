@@ -16,8 +16,8 @@ class Cell
     #[Id, Column(type: 'string', unique: true)]
     public readonly string $id;
 
-    #[ManyToOne(targetEntity: Ship::class, inversedBy: 'cells')]
-    private ?Ship $ship = null;
+    #[Column(type: 'string', nullable: true)]
+    private ?string $shipId = null;
 
     #[Column(type: 'coordinate')]
     private Coordinate $coordinate;
@@ -51,15 +51,13 @@ class Cell
         return $this->guessed;
     }
 
-    public function occupy(Ship $ship): void
+    public function occupy(string $shipId): void
     {
-        if ($this->ship !== null) {
+        if ($this->shipId !== null) {
             throw new \InvalidArgumentException();
         }
 
-        $this->ship = $ship;
-
-         $ship->addCell($this);
+        $this->shipId = $shipId;
     }
 
     public function isGuessed(): ?bool
@@ -67,8 +65,8 @@ class Cell
         return $this->guessed;
     }
 
-    public function getShip(): ?Ship
+    public function getShip(): ?string
     {
-        return $this->ship;
+        return $this->shipId;
     }
 }

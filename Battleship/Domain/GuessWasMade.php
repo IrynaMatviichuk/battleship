@@ -8,7 +8,7 @@ class GuessWasMade
         private readonly string $cellId,
         private readonly Coordinate $coordinate,
         private readonly bool $isAHit,
-        private readonly ?Ship $ship,
+        private readonly ?string $shipId,
     ) {}
 
     public function isAHit(): bool
