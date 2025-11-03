@@ -32,9 +32,12 @@ class Board
     #[OneToMany(targetEntity: Ship::class, mappedBy: 'board', cascade: ['persist'])]
     private Collection $ships;
 
-    public function __construct(string $id)
+    private string $gameId;
+
+    public function __construct(string $id, string $gameId)
     {
         $this->id = $id;
+        $this->gameId = $gameId;
         $this->size = self::DEFAULT_SIZE;
 
         $this->cells = new ArrayCollection();
