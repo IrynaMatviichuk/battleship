@@ -93,7 +93,9 @@ class FireMissileHandlerTest extends TestCase
     public function test_it_records_ship_has_sunk(): void
     {
         $board = new Board('1');
-        $ship = new Ship(1, $board, 2);
+        $ship = $board->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 2;
+        });
 
         $board->placeShip($ship, [
             new Coordinate(0, 0),

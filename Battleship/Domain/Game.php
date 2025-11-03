@@ -8,31 +8,32 @@ class Game
 {
     use EventRecorder;
 
+    private string $id;
     private array $boards;
 
     private array $players;
 
     private Phase $phase = Phase::PLACE_SHIPS;
 
-    public function __construct(array $boards, array $players)
+    private function __construct(string $id, string $boards, array $players)
     {
+        $this->id = $id;
         $this->boards = $boards;
         $this->players = $players;
     }
 
-    public static function startGame(): self
+    public static function startGame(string $id, string $playerId): self
     {
         $players = [
-            1 => new Player(1),
-            2 => new Player(2),
+            1 => new Player($playerId),
         ];
 
         $boards = [
-            1 => new Board(1),
-            2 => new Board(2),
+            1 => new Board(1, $id),
+            2 => new Board(2, $id),
         ];
 
-        return new self($boards, $players);
+        return new self($id, $boards, $players);
     }
 
     public function placeShip(int $boardId, Ship $ship, array $coordinates): void

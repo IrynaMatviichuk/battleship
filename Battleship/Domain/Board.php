@@ -32,9 +32,12 @@ class Board
     #[OneToMany(targetEntity: Ship::class, mappedBy: 'board', cascade: ['persist'])]
     private Collection $ships;
 
-    public function __construct(string $id)
+    private string $gameId;
+
+    public function __construct(string $id, string $gameId)
     {
         $this->id = $id;
+        $this->gameId = $gameId;
         $this->size = self::DEFAULT_SIZE;
 
         $this->cells = new ArrayCollection();
@@ -51,6 +54,11 @@ class Board
         foreach (self::SHIP_SIZES as $size) {
             $this->ships[] = new Ship(Str::uuid(), $this, $size);
         }
+    }
+
+    public function getShips(): Collection
+    {
+        return $this->ships;
     }
 
     public function guess(Coordinate $coordinate): void
@@ -72,24 +80,47 @@ class Board
         if ($shipId && $this->shipHasSunk($shipId)) {
             $this->record(new ShipHasSunk($shipId));
         }
+
+        if ($this->allShipsHasSunk()) {
+            $this->record(new GameOver($this->id));
+        }
+    }
+
+    private function allShipsHasSunk(): bool
+    {
+        $sunkShipsCount = $this->ships->filter(function (Ship $ship) {
+            return $ship->sunk();
+        })->count();
+
+        return $sunkShipsCount === $this->ships->count();
     }
 
     public function shipHasSunk(string $shipId): bool
     {
-        $cells = $this->cells->filter(function (Cell $cell) use ($shipId) {
-           return $cell->getShip() === $shipId;
-        });
+        $unguessedCellsCount = $this->cells->filter(function (Cell $cell) use ($shipId) {
+           return $cell->getShip() === $shipId && !$cell->isGuessed();
+        })->count();
 
-        $unguessedCells = $cells->filter(function (Cell $cell) {
-           return !$cell->isGuessed();
-        });
+        if ($unguessedCellsCount === 0) {
+            $ship = $this->ships->findFirst(function ($key, Ship $ship) use ($shipId) {
+                return $ship->id === $shipId;
+            });
 
-        return $unguessedCells->count() === 0;
+            if (!$ship) {
+                throw new \InvalidArgumentException('Ship not found');
+            }
+
+            $ship->markAsSunk();
+
+            return true;
+        }
+
+        return false;
     }
 
     public function getCell(Coordinate $coordinate): Cell
     {
-        $cell = $this->cells->findFirst(function ($key, Cell $cell) use($coordinate) {
+        $cell = $this->cells->findFirst(function ($key, Cell $cell) use ($coordinate) {
           return $cell->hasCoordinate($coordinate);
         });
 

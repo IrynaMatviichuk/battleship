@@ -46,7 +46,7 @@ class Cell
             throw new \InvalidArgumentException();
         }
 
-        $this->guessed = $this->ship !== null;
+        $this->guessed = $this->shipId !== null;
 
         return $this->guessed;
     }
