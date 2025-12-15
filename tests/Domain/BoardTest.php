@@ -36,9 +36,11 @@ class BoardTest extends TestCase
         $game = $this->createMock(Game::class);
         $board = new Board(1, $game);
 
-        $ship = new Ship(1, $board, 2);
+        $ship = $board->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 2;
+        });
 
-        $board->placeShip($ship, [
+        $board->placeShip($ship->id, [
             new Coordinate(0, 0),
             new Coordinate(0, 1),
         ]);
@@ -59,7 +61,7 @@ class BoardTest extends TestCase
            return $ship->size === 3;
         });
 
-        $board->placeShip($ship, [
+        $board->placeShip($ship->id, [
             new Coordinate(3, 4),
             new Coordinate(3, 5),
             new Coordinate(3, 6),
@@ -91,18 +93,23 @@ class BoardTest extends TestCase
         $game = $this->createMock(Game::class);
         $board = new Board(1, $game);
 
-        $ship = new Ship(1, $board, 2);
+        $ship1 = $board->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 2;
+        });
 
-        $board->placeShip($ship, [
+        $board->placeShip($ship1->id, [
             new Coordinate(0, 0),
             new Coordinate(0, 1),
         ]);
 
-        $ship2 = new Ship(2, $board, 2);
+        $ship2 = $board->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 3;
+        });
 
-        $board->placeShip($ship2, [
+        $board->placeShip($ship2->id, [
             new Coordinate(0, 0),
             new Coordinate(0, 1),
+            new Coordinate(0, 2),
         ]);
     }
 
@@ -113,11 +120,13 @@ class BoardTest extends TestCase
         $game = $this->createMock(Game::class);
 
         $board1 = new Board(1, $game);
-        $ship1 = new Ship(1, $board1, 2);
+        $ship1 = $board1->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 2;
+        });
 
         $board2 = new Board(2, $game);
 
-        $board2->placeShip($ship1, [
+        $board2->placeShip($ship1->id, [
             new Coordinate(0, 0),
             new Coordinate(0, 1),
         ]);
@@ -129,9 +138,12 @@ class BoardTest extends TestCase
 
         $game = $this->createMock(Game::class);
         $board = new Board(1, $game);
-        $ship = new Ship(1, $board, 2);
 
-        $board->placeShip($ship, [
+        $ship = $board->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 2;
+        });
+
+        $board->placeShip($ship->id, [
             new Coordinate(0, 0),
         ]);
     }

@@ -2,6 +2,7 @@
 
 namespace Tests\Battleship\Domain;
 
+use Battleship\Infrastructure\InMemoryBoardRepository;
 use Battleship\Domain\BattleHasBegun;
 use Battleship\Domain\Board;
 use Battleship\Domain\Coordinate;
@@ -16,13 +17,20 @@ class GameTest extends TestCase
     public function test_player_can_hit_ship(): void
     {
         $game = Game::startGame('game_id', 'board_1', 'board_2');
+
+        $board1 = $game->getBoards()['board_1'];
+        $board2 = $game->getBoards()['board_2'];
+
+        $ship = $board1->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 3;
+        });
+
         $game->addPlayer('player_1');
         $game->addPlayer('player_2');
 
         $game->placeShip(
-            'ship_id',
+            $ship->id,
             'board_1',
-            3,
             [
                 new Coordinate(0, 1),
                 new Coordinate(0, 2),
@@ -33,20 +41,20 @@ class GameTest extends TestCase
         $game->markPlayerReady('player_1');
         $game->markPlayerReady('player_2');
 
-//        $events = $boards[1]->recordedMessages();
-//
-//        $this->assertCount(0, $events);
-//
+        $events = $board1->recordedMessages();
+
+        $this->assertCount(0, $events);
+
         $game->guess('board_1', new Coordinate(0, 2));
 
-//        $events = $boards[1]->recordedMessages();
-//
-//        $this->assertCount(1, $events);
-//
-//        $event = $events[0];
-//        $this->assertInstanceOf(GuessWasMade::class, $event);
-//
-//        $this->assertTrue($event->isAHit());
+        $events = $board1->recordedMessages();
+
+        $this->assertCount(1, $events);
+
+        $event = $events[0];
+        $this->assertInstanceOf(GuessWasMade::class, $event);
+
+        $this->assertTrue($event->isAHit());
     }
 
     public function test_player_cant_guess_during_place_ships_phase(): void
@@ -74,7 +82,6 @@ class GameTest extends TestCase
         $game->placeShip(
             'ship_id',
             'board_id',
-            3,
             [
                 new Coordinate(0, 1),
                 new Coordinate(0, 2),

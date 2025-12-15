@@ -11,8 +11,6 @@ class InMemoryShipRepository implements ShipRepository
 
     public function findById(string $shipId): Ship
     {
-        $key = array_search($shipId, array_column($this->ships, 'id'));
-
-        return $this->ships[$key];
+        return $this->ships[$shipId];
     }
 }

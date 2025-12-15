@@ -10,6 +10,7 @@ use Battleship\Domain\Ship;
 use Battleship\Domain\Game;
 use Battleship\Infrastructure\InMemoryBoardRepository;
 use Battleship\Infrastructure\InMemoryShipRepository;
+use Battleship\Infrastructure\InMemoryGameRepository;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -18,15 +19,20 @@ class PlaceShipHandlerTest extends TestCase
     public function test_it_places_ship(): void
     {
         $game = Game::startGame('game_id', 'board_id', 'board_2');
-        $board = new Board('board_id', $game);
+
+        $games = new InMemoryGameRepository([$game]);
+
+        $board = $game->getBoards()['board_id'];
         $boards = new InMemoryBoardRepository([$board]);
 
-        $ship = new Ship('ship_id', $board, 2);
-        $ships = new InMemoryShipRepository([$ship]);
+        $ship = $board->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 2;
+        });
+        $ships = new InMemoryShipRepository([$ship->id => $ship]);
 
-        $command = new PlaceShip($board->id, $ship->id, 2, 3, 'east');
+        $command = new PlaceShip($game->id, $board->id, $ship->id, 2, 3, 'east');
 
-        $placeShipHandler = new PlaceShipHandler($boards, $ships);
+        $placeShipHandler = new PlaceShipHandler($games, $boards, $ships);
 
         $placeShipHandler->handle($command);
 
@@ -39,38 +45,52 @@ class PlaceShipHandlerTest extends TestCase
 
     public function test_it_places_ship_from_other_board(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Ship does not belong to board');
 
-        $game = new Game('game_id');
-        $board = new Board('board_id', $game);
-        $otherBoard = new Board('other_board_id', $game);
+        $game = Game::startGame('game_id', 'board_id', 'other_board_id');
+
+        $games = new InMemoryGameRepository([$game]);
+
+        $board = $game->getBoards()['board_id'];
+        $otherBoard = $game->getBoards()['other_board_id'];
+
         $boards = new InMemoryBoardRepository([$board, $otherBoard]);
 
-        $ship = new Ship('ship_id', $board, 2);
-        $ships = new InMemoryShipRepository([$ship]);
+        $ship = $board->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 2;
+        });
 
-        $command = new PlaceShip($otherBoard->id, $ship->id, 2, 3, 'east');
+        $ships = new InMemoryShipRepository([$ship->id => $ship]);
 
-        $placeShipHandler = new PlaceShipHandler($boards, $ships);
+        $command = new PlaceShip($game->id, $otherBoard->id, $ship->id, 2, 3, 'east');
+
+        $placeShipHandler = new PlaceShipHandler($games, $boards, $ships);
 
         $placeShipHandler->handle($command);
     }
 
     public function test_it_places_ship_second_time(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cell is already occupied');
 
-        $game = new Game('game_id');
-        $board = new Board('board_id', $game);
-        $otherBoard = new Board('other_board_id', $game);
+        $game = Game::startGame('game_id', 'board_id', 'other_board_id');
+
+        $games = new InMemoryGameRepository([$game]);
+
+        $board = $game->getBoards()['board_id'];
+        $otherBoard = $game->getBoards()['other_board_id'];
+
         $boards = new InMemoryBoardRepository([$board, $otherBoard]);
 
-        $ship = new Ship('ship_id', $board, 2);
-        $ships = new InMemoryShipRepository([$ship]);
+        $ship = $board->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 2;
+        });
 
-        $command = new PlaceShip($board->id, $ship->id, 2, 3, 'east');
+        $ships = new InMemoryShipRepository([$ship->id => $ship]);
 
-        $placeShipHandler = new PlaceShipHandler($boards, $ships);
+        $command = new PlaceShip($game->id, $board->id, $ship->id, 2, 3, 'east');
+
+        $placeShipHandler = new PlaceShipHandler($games, $boards, $ships);
 
         $placeShipHandler->handle($command);
 
@@ -81,16 +101,24 @@ class PlaceShipHandlerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $game = new Game('game_id');
-        $board = new Board('board_id', $game);
-        $boards = new InMemoryBoardRepository([$board]);
+        $game = Game::startGame('game_id', 'board_id', 'other_board_id');
 
-        $ship = new Ship('ship_id', $board, 2);
-        $ships = new InMemoryShipRepository([$ship]);
+        $games = new InMemoryGameRepository([$game]);
 
-        $command = new PlaceShip($board->id, $ship->id, 9, 9, 'east');
+        $board = $game->getBoards()['board_id'];
+        $otherBoard = $game->getBoards()['other_board_id'];
 
-        $placeShipHandler = new PlaceShipHandler($boards, $ships);
+        $boards = new InMemoryBoardRepository([$board, $otherBoard]);
+
+        $ship = $board->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 2;
+        });
+
+        $ships = new InMemoryShipRepository([$ship->id => $ship]);
+
+        $command = new PlaceShip($game->id, $board->id, $ship->id, 9, 9, 'east');
+
+        $placeShipHandler = new PlaceShipHandler($games, $boards, $ships);
 
         $placeShipHandler->handle($command);
     }
@@ -99,18 +127,29 @@ class PlaceShipHandlerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $game = new Game('game_id');
-        $board = new Board('board_id', $game);
-        $boards = new InMemoryBoardRepository([$board]);
+        $game = Game::startGame('game_id', 'board_id', 'other_board_id');
 
-        $ship1 = new Ship('ship_id', $board, 2);
-        $ship2 = new Ship('ship_id', $board, 3);
-        $ships = new InMemoryShipRepository([$ship1, $ship2]);
+        $games = new InMemoryGameRepository([$game]);
 
-        $command1 = new PlaceShip($board->id, $ship1->id, 0, 0, 'east');
-        $command2 = new PlaceShip($board->id, $ship2->id, 0, 1, 'east');
+        $board = $game->getBoards()['board_id'];
+        $otherBoard = $game->getBoards()['other_board_id'];
 
-        $placeShipHandler = new PlaceShipHandler($boards, $ships);
+        $boards = new InMemoryBoardRepository([$board, $otherBoard]);
+
+        $ship1 = $board->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 2;
+        });
+
+        $ship2 = $board->getShips()->findFirst(function ($key, Ship $ship) {
+            return $ship->size === 3;
+        });
+
+        $ships = new InMemoryShipRepository([$ship1->id => $ship1, $ship2->id => $ship2]);
+
+        $command1 = new PlaceShip($game->id, $board->id, $ship1->id, 0, 0, 'east');
+        $command2 = new PlaceShip($game->id, $board->id, $ship2->id, 0, 1, 'east');
+
+        $placeShipHandler = new PlaceShipHandler($games, $boards, $ships);
 
         $placeShipHandler->handle($command1);
         $placeShipHandler->handle($command2);
