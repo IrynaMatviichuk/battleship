@@ -4,11 +4,11 @@ namespace Battleship\Domain;
 
 class Player
 {
-    private int $id;
+    private string $id;
     private string $gameId;
     private bool $ready;
 
-    public function __construct(int $id, string $gameId)
+    public function __construct(string $id, string $gameId)
     {
         $this->id = $id;
         $this->gameId = $gameId;

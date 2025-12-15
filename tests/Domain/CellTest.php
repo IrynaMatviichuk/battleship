@@ -5,6 +5,7 @@ namespace Tests\Battleship\Domain;
 use Battleship\Domain\Board;
 use Battleship\Domain\Cell;
 use Battleship\Domain\Coordinate;
+use Battleship\Domain\Game;
 use Battleship\Domain\Ship;
 use PHPUnit\Framework\TestCase;
 
@@ -14,14 +15,16 @@ class CellTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
 
-        $board = new Board('board_id');
+        $game = $this->createMock(Game::class);
+        $board = new Board('board_id', $game);
 
         new Cell('cell_id', $board, new Coordinate(0, 0));
     }
 
     public function test_it_matches_coordinate(): void
     {
-        $board = new Board('board_id');
+        $game = $this->createMock(Game::class);
+        $board = new Board('board_id', $game);
 
         $cell = new Cell('cell_id', $board, new Coordinate(3, 4));
 
@@ -30,7 +33,8 @@ class CellTest extends TestCase
 
     public function test_it_does_not_match_coordinate(): void
     {
-        $board = new Board('board_id');
+        $game = $this->createMock(Game::class);
+        $board = new Board('board_id', $game);
 
         $cell = new Cell('cell_id', $board, new Coordinate(3, 4));
 
@@ -39,7 +43,8 @@ class CellTest extends TestCase
 
     public function test_it_gets_occupied_by_ship(): void
     {
-        $board = new Board('board_id');
+        $game = $this->createMock(Game::class);
+        $board = new Board('board_id', $game);
 
         $cell = new Cell('cell_id', $board, new Coordinate(3, 4));
 
@@ -54,7 +59,8 @@ class CellTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $board = new Board('board_id');
+        $game = $this->createMock(Game::class);
+        $board = new Board('board_id', $game);
 
         $cell = new Cell('cell_id', $board, new Coordinate(3, 4));
 
@@ -69,7 +75,8 @@ class CellTest extends TestCase
 
     public function test_it_is_not_guessed(): void
     {
-        $board = new Board('board_id');
+        $game = $this->createMock(Game::class);
+        $board = new Board('board_id', $game);
 
         $cell = new Cell('cell_id', $board, new Coordinate(3, 4));
 
@@ -78,7 +85,8 @@ class CellTest extends TestCase
 
     public function test_it_is_missed(): void
     {
-        $board = new Board('board_id');
+        $game = $this->createMock(Game::class);
+        $board = new Board('board_id', $game);
 
         $cell = new Cell('cell_id', $board, new Coordinate(3, 4));
 
@@ -89,7 +97,8 @@ class CellTest extends TestCase
 
     public function test_it_is_guessed(): void
     {
-        $board = new Board('board_id');
+        $game = $this->createMock(Game::class);
+        $board = new Board('board_id', $game);
 
         $cell = new Cell('cell_id', $board, new Coordinate(3, 4));
 

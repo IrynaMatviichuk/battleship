@@ -4,21 +4,25 @@ namespace Battleship\Application;
 
 use Battleship\Domain\BoardRepository;
 use Battleship\Domain\Coordinate;
+use Battleship\Domain\GameRepository;
 use Battleship\Domain\ShipRepository;
 
 class PlaceShipHandler
 {
     public function __construct(
+        private GameRepository $games,
         private BoardRepository $boards,
         private ShipRepository $ships,
     ) {}
 
     public function handle(PlaceShip $command): void
     {
-        $board = $this->boards->findById($command->boardId);
+        $game = $this->games->findById($command->gameId);
+//        $board = $this->boards->findById($command->boardId);
+//
+//        $ship = $this->ships->findById($command->shipId);
 
-        $ship = $this->ships->findById($command->shipId);
-
+        $game->placeShip($command->shipId, $command->boardId, );
         $coordinates = [];
 
         for ($shift = 0; $shift < $ship->size; $shift++) {

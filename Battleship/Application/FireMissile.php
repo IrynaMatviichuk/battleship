@@ -6,5 +6,5 @@ use Battleship\Domain\Coordinate;
 
 readonly class FireMissile
 {
-    public function __construct(public Coordinate $coordinate, public string $boardId) {}
+    public function __construct(public Coordinate $coordinate, public string $gameId, public string $boardId) {}
 }

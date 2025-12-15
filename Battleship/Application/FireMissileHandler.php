@@ -2,16 +2,18 @@
 
 namespace Battleship\Application;
 
+use Battleship\Domain\Game;
+use Battleship\Domain\GameRepository;
 use Battleship\Domain\BoardRepository;
 
 class FireMissileHandler
 {
-    public function __construct(private BoardRepository $boards) {}
+    public function __construct(private GameRepository $games) {}
 
     public function handle(FireMissile $command): void
     {
-        $board = $this->boards->findById($command->boardId);
+        $game = $this->games->findById($command->gameId);
 
-        $board->guess($command->coordinate);
+        $game->guess($command->boardId, $command->coordinate);
     }
 }

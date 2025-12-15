@@ -4,7 +4,7 @@ namespace Tests\Battleship\Application;
 
 use Battleship\Application\StartGame;
 use Battleship\Application\StartGameHandler;
-use Battleship\Infrastructure\InMemoryBoardRepository;
+use Battleship\Infrastructure\InMemoryGameRepository;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\TestCase;
 
@@ -12,21 +12,20 @@ class StartGameHandlerTest extends TestCase
 {
     public function test_it_creates_boards(): void
     {
-        $boards = new InMemoryBoardRepository([]);
+        $games = new InMemoryGameRepository([]);
 
+        $gameId = Str::uuid();
         $boardId1 = Str::uuid();
         $boardId2 = Str::uuid();
 
-        $command = new StartGame([$boardId1, $boardId2]);
+        $command = new StartGame($gameId, [$boardId1, $boardId2]);
 
-        $startGameHandler = new StartGameHandler($boards);
+        $startGameHandler = new StartGameHandler($games);
 
         $startGameHandler->handle($command);
 
-        $board1 = $boards->findById($boardId1);
-        $board2 = $boards->findById($boardId2);
+        $game = $games->findById($gameId);
 
-        $this->assertEquals($boardId1, $board1->id);
-        $this->assertEquals($boardId2, $board2->id);
+        $this->assertEquals($gameId, $game->id);
     }
 }

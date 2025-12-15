@@ -7,6 +7,7 @@ use Battleship\Application\PlaceShipHandler;
 use Battleship\Domain\Board;
 use Battleship\Domain\Coordinate;
 use Battleship\Domain\Ship;
+use Battleship\Domain\Game;
 use Battleship\Infrastructure\InMemoryBoardRepository;
 use Battleship\Infrastructure\InMemoryShipRepository;
 use InvalidArgumentException;
@@ -16,7 +17,8 @@ class PlaceShipHandlerTest extends TestCase
 {
     public function test_it_places_ship(): void
     {
-        $board = new Board('board_id');
+        $game = Game::startGame('game_id', 'board_id', 'board_2');
+        $board = new Board('board_id', $game);
         $boards = new InMemoryBoardRepository([$board]);
 
         $ship = new Ship('ship_id', $board, 2);
@@ -39,8 +41,9 @@ class PlaceShipHandlerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $board = new Board('board_id');
-        $otherBoard = new Board('other_board_id');
+        $game = new Game('game_id');
+        $board = new Board('board_id', $game);
+        $otherBoard = new Board('other_board_id', $game);
         $boards = new InMemoryBoardRepository([$board, $otherBoard]);
 
         $ship = new Ship('ship_id', $board, 2);
@@ -57,8 +60,9 @@ class PlaceShipHandlerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $board = new Board('board_id');
-        $otherBoard = new Board('other_board_id');
+        $game = new Game('game_id');
+        $board = new Board('board_id', $game);
+        $otherBoard = new Board('other_board_id', $game);
         $boards = new InMemoryBoardRepository([$board, $otherBoard]);
 
         $ship = new Ship('ship_id', $board, 2);
@@ -77,7 +81,8 @@ class PlaceShipHandlerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $board = new Board('board_id');
+        $game = new Game('game_id');
+        $board = new Board('board_id', $game);
         $boards = new InMemoryBoardRepository([$board]);
 
         $ship = new Ship('ship_id', $board, 2);
@@ -94,7 +99,8 @@ class PlaceShipHandlerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $board = new Board('board_id');
+        $game = new Game('game_id');
+        $board = new Board('board_id', $game);
         $boards = new InMemoryBoardRepository([$board]);
 
         $ship1 = new Ship('ship_id', $board, 2);
