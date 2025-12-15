@@ -3,40 +3,52 @@
 namespace Battleship\Domain;
 
 use Battleship\Shared\EventRecorder;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\OneToMany;
 
+#[Entity]
 class Game
 {
     use EventRecorder;
 
-    private string $id;
-    private array $boards;
+    #[Id, Column(type: "string", unique: true)]
+    public readonly string $id;
+
+    #[Column(type: 'phase')]
+    private Phase $phase = Phase::PLACE_SHIPS;
+
+    #[OneToMany(targetEntity: Board::class, mappedBy: 'game', cascade: ['persist'])]
+    private Collection $boards;
 
     private array $players;
 
-    private Phase $phase = Phase::PLACE_SHIPS;
-
-    private function __construct(string $id, string $boards, array $players)
+    private function __construct(string $id)
     {
         $this->id = $id;
-        $this->boards = $boards;
-        $this->players = $players;
+        $this->boards = new ArrayCollection();
+        $this->players = [];
     }
 
-    public static function startGame(string $id, string $playerId): self
+    public static function startGame(string $id, string $board1Id, string $board2Id): self
     {
-        $players = [
-            1 => new Player($playerId),
-        ];
+        $game = new self($id);
 
-        $boards = [
-            1 => new Board(1, $id),
-            2 => new Board(2, $id),
-        ];
+        $game->boards->add(new Board($board1Id, $game));
+        $game->boards->add(new Board($board2Id, $game));
 
-        return new self($id, $boards, $players);
+        return $game;
     }
 
-    public function placeShip(int $boardId, Ship $ship, array $coordinates): void
+    public function addPlayer(string $playerId): void
+    {
+        $this->players[$playerId] = new Player($playerId, $this->id);
+    }
+
+    public function placeShip(string $shipId, string $boardId, array $coordinates): void
     {
         if ($this->phase !== Phase::PLACE_SHIPS) {
             throw new \InvalidArgumentException();
@@ -45,10 +57,10 @@ class Game
         /** @var Board $board */
         $board = $this->boards[$boardId];
 
-        $board->placeShip($ship, $coordinates);
+        $board->placeShip($shipId, $coordinates);
     }
 
-    public function guess(int $boardId, Coordinate $coordinate): void
+    public function guess(string $boardId, Coordinate $coordinate): void
     {
         if ($this->phase !== Phase::BATTLE) {
             throw new \InvalidArgumentException();
@@ -60,7 +72,7 @@ class Game
         $board->guess($coordinate);
     }
 
-    public function markPlayerReady(int $playerId): void
+    public function markPlayerReady(string $playerId): void
     {
         /** @var Player $player */
         $player = $this->players[$playerId];

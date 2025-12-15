@@ -25,7 +25,7 @@ class StartGame extends Command
 
     public function handle(CommandBus $commandBus): void
     {
-        $command = new StartGameCommand([Str::uuid(), Str::uuid()]);
+        $command = new StartGameCommand(Str::uuid(), [Str::uuid(), Str::uuid()]);
 
         $commandBus->handle($command);
     }

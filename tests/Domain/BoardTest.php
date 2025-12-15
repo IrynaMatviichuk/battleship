@@ -4,6 +4,7 @@ namespace Tests\Battleship\Domain;
 
 use Battleship\Domain\Board;
 use Battleship\Domain\Coordinate;
+use Battleship\Domain\Game;
 use Battleship\Domain\GuessWasMade;
 use Battleship\Domain\Ship;
 use PHPUnit\Framework\TestCase;
@@ -14,12 +15,14 @@ class BoardTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
 
-        new Board(1);
+        $game = $this->createMock(Game::class);
+        new Board(1, $game);
     }
 
     public function test_guess_is_miss(): void
     {
-        $board = new Board(1);
+        $game = $this->createMock(Game::class);
+        $board = new Board(1, $game);
 
         $board->guess(new Coordinate(3, 4));
 
@@ -30,7 +33,8 @@ class BoardTest extends TestCase
 
     public function test_guess_is_hit(): void
     {
-        $board = new Board(1);
+        $game = $this->createMock(Game::class);
+        $board = new Board(1, $game);
 
         $ship = new Ship(1, $board, 2);
 
@@ -48,7 +52,8 @@ class BoardTest extends TestCase
 
     public function test_ship_was_sunk(): void
     {
-        $board = new Board('board_id');
+        $game = $this->createMock(Game::class);
+        $board = new Board('board_id', $game);
 
         $ship = $board->getShips()->findFirst(function ($key, Ship $ship) {
            return $ship->size === 3;
@@ -72,7 +77,8 @@ class BoardTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $board = new Board(1);
+        $game = $this->createMock(Game::class);
+        $board = new Board(1, $game);
 
         $board->guess(new Coordinate(0, 0));
         $board->guess(new Coordinate(0, 0));
@@ -82,7 +88,8 @@ class BoardTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $board = new Board(1);
+        $game = $this->createMock(Game::class);
+        $board = new Board(1, $game);
 
         $ship = new Ship(1, $board, 2);
 
@@ -103,10 +110,12 @@ class BoardTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $board1 = new Board(1);
+        $game = $this->createMock(Game::class);
+
+        $board1 = new Board(1, $game);
         $ship1 = new Ship(1, $board1, 2);
 
-        $board2 = new Board(2);
+        $board2 = new Board(2, $game);
 
         $board2->placeShip($ship1, [
             new Coordinate(0, 0),
@@ -118,7 +127,8 @@ class BoardTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $board = new Board(1);
+        $game = $this->createMock(Game::class);
+        $board = new Board(1, $game);
         $ship = new Ship(1, $board, 2);
 
         $board->placeShip($ship, [
@@ -128,7 +138,8 @@ class BoardTest extends TestCase
 
     public function test_guess_was_made_recorded(): void
     {
-        $board = new Board(1);
+        $game = $this->createMock(Game::class);
+        $board = new Board(1, $game);
 
         $events = $board->recordedMessages();
 

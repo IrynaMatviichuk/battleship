@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Illuminate\Support\Str;
 
@@ -29,15 +30,16 @@ class Board
     #[OneToMany(targetEntity: Cell::class, mappedBy: 'board', cascade: ['persist'])]
     private Collection $cells;
 
-    #[OneToMany(targetEntity: Ship::class, mappedBy: 'board', cascade: ['persist'])]
+    #[OneToMany(targetEntity: Ship::class, mappedBy: 'board', cascade: ['persist'], indexBy: 'id')]
     private Collection $ships;
 
-    private string $gameId;
+    #[ManyToOne(targetEntity: Game::class, inversedBy: 'boards')]
+    private Game $game;
 
-    public function __construct(string $id, string $gameId)
+    public function __construct(string $id, Game $game)
     {
         $this->id = $id;
-        $this->gameId = $gameId;
+        $this->game = $game;
         $this->size = self::DEFAULT_SIZE;
 
         $this->cells = new ArrayCollection();
@@ -52,7 +54,8 @@ class Board
         }
 
         foreach (self::SHIP_SIZES as $size) {
-            $this->ships[] = new Ship(Str::uuid(), $this, $size);
+            $id = Str::uuid()->toString();
+            $this->ships[$id] = new Ship($id, $this, $size);
         }
     }
 
@@ -142,8 +145,10 @@ class Board
         return $cells;
     }
 
-    public function placeShip(Ship $ship, array $coordinates): void
+    public function placeShip(string $shipId, array $coordinates): void
     {
+        $ship = $this->ships[$shipId];
+
         if ($ship->board->id !== $this->id) {
             throw new \InvalidArgumentException();
         }

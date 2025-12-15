@@ -2,22 +2,20 @@
 
 namespace Battleship\Application;
 
-use Battleship\Domain\Board;
-use Battleship\Domain\BoardRepository;
+use Battleship\Domain\Game;
+use Battleship\Domain\GameRepository;
 
 class StartGameHandler
 {
     public function __construct(
-        private BoardRepository $boards,
+        private GameRepository $games,
     ) {
     }
 
     public function handle(StartGame $command): void
     {
-        foreach ($command->boardIds as $boardId) {
-            $board = new Board($boardId);
+        $game = Game::startGame($command->gameId, ...$command->boardIds);
 
-            $this->boards->add($board);
-        }
+        $this->games->add($game);
     }
 }
