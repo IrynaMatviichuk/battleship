@@ -154,7 +154,7 @@ class Board
         }
 
         if ($ship->size !== count($coordinates)) {
-            throw new \InvalidArgumentException('');
+            throw new \InvalidArgumentException();
         }
 
         $cells = $this->getCells($coordinates);

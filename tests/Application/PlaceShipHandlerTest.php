@@ -28,7 +28,7 @@ class PlaceShipHandlerTest extends TestCase
         $ship = $board->getShips()->findFirst(function ($key, Ship $ship) {
             return $ship->size === 2;
         });
-        $ships = new InMemoryShipRepository([$ship->id => $ship]);
+        $ships = new InMemoryShipRepository([$ship]);
 
         $command = new PlaceShip($game->id, $board->id, $ship->id, 2, 3, 'east');
 
@@ -60,7 +60,7 @@ class PlaceShipHandlerTest extends TestCase
             return $ship->size === 2;
         });
 
-        $ships = new InMemoryShipRepository([$ship->id => $ship]);
+        $ships = new InMemoryShipRepository([$ship]);
 
         $command = new PlaceShip($game->id, $otherBoard->id, $ship->id, 2, 3, 'east');
 
@@ -86,7 +86,7 @@ class PlaceShipHandlerTest extends TestCase
             return $ship->size === 2;
         });
 
-        $ships = new InMemoryShipRepository([$ship->id => $ship]);
+        $ships = new InMemoryShipRepository([$ship]);
 
         $command = new PlaceShip($game->id, $board->id, $ship->id, 2, 3, 'east');
 
@@ -114,7 +114,7 @@ class PlaceShipHandlerTest extends TestCase
             return $ship->size === 2;
         });
 
-        $ships = new InMemoryShipRepository([$ship->id => $ship]);
+        $ships = new InMemoryShipRepository([$ship]);
 
         $command = new PlaceShip($game->id, $board->id, $ship->id, 9, 9, 'east');
 
@@ -144,7 +144,7 @@ class PlaceShipHandlerTest extends TestCase
             return $ship->size === 3;
         });
 
-        $ships = new InMemoryShipRepository([$ship1->id => $ship1, $ship2->id => $ship2]);
+        $ships = new InMemoryShipRepository([$ship1, $ship2]);
 
         $command1 = new PlaceShip($game->id, $board->id, $ship1->id, 0, 0, 'east');
         $command2 = new PlaceShip($game->id, $board->id, $ship2->id, 0, 1, 'east');

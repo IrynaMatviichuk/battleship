@@ -7,7 +7,11 @@ use Battleship\Domain\ShipRepository;
 
 class InMemoryShipRepository implements ShipRepository
 {
-    public function __construct(private array $ships) {}
+    public function __construct(private array $ships) {
+        foreach ($this->ships as $ship) {
+            $this->ships[$ship->id] = $ship;
+        }
+    }
 
     public function findById(string $shipId): Ship
     {
