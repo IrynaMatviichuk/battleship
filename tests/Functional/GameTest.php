@@ -10,9 +10,11 @@ use Battleship\Application\StartGameHandler;
 use Battleship\Application\PlaceShipHandler;
 use Battleship\Domain\Board;
 use Battleship\Domain\Coordinate;
+use Battleship\Domain\Game;
 use Battleship\Domain\GameOver;
 use Battleship\Domain\Ship;
 use Battleship\Infrastructure\InMemoryBoardRepository;
+use Battleship\Infrastructure\InMemoryGameRepository;
 use Battleship\Infrastructure\InMemoryShipRepository;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
@@ -22,16 +24,22 @@ class GameTest extends TestCase
 {
     public function test_game_is_over(): void
     {
+        $games = new InMemoryGameRepository([]);
         $boards = new InMemoryBoardRepository([]);
 
+        $gameId = Str::uuid();
         $boardId1 = Str::uuid();
         $boardId2 = Str::uuid();
 
-        $startGameHandler = new StartGameHandler($boards);
-        $startGameHandler->handle(new StartGame([$boardId1, $boardId2]));
+        $startGameHandler = new StartGameHandler($games);
+        $startGameHandler->handle(new StartGame($gameId, [$boardId1, $boardId2]));
 
-        $board1 = $boards->findById($boardId1);
-        $board2 = $boards->findById($boardId2);
+        $game = $games->findById($gameId);
+        $board1 = $game->getBoards()[$boardId1->toString()];
+        $board2 = $game->getBoards()[$boardId2->toString()];
+
+        $game->addPlayer('player_1');
+        $game->addPlayer('player_2');
 
         $ships = new InMemoryShipRepository([...$board1->getShips(), ...$board2->getShips()]);
 
@@ -41,14 +49,17 @@ class GameTest extends TestCase
         $this->assertCount(0, $events1);
         $this->assertCount(0, $events2);
 
-        $placeShipHandler = new PlaceShipHandler($boards, $ships);
-        $fireMissileHandler = new FireMissileHandler($boards);
+        $placeShipHandler = new PlaceShipHandler($games, $boards, $ships);
+        $fireMissileHandler = new FireMissileHandler($games);
 
-        $this->placeShips($board1, $placeShipHandler);
-        $this->placeShips($board2, $placeShipHandler);
+        $this->placeShips($game, $board1, $placeShipHandler);
+        $this->placeShips($game, $board2, $placeShipHandler);
 
-        $this->fireMissiles($board1, $fireMissileHandler);
-        $this->fireMissiles($board2, $fireMissileHandler);
+        $game->markPlayerReady('player_1');
+        $game->markPlayerReady('player_2');
+
+        $this->fireMissiles($game, $board1, $fireMissileHandler);
+        $this->fireMissiles($game, $board2, $fireMissileHandler);
 
         foreach ($board1->getShips() as $ship) {
             $this->assertTrue($ship->sunk());
@@ -71,20 +82,20 @@ class GameTest extends TestCase
         $this->assertInstanceOf(GameOver::class, $board2GameOverEvent);
     }
 
-    private function placeShips(Board $board, PlaceShipHandler $handler): void
+    private function placeShips(Game $game, Board $board, PlaceShipHandler $handler): void
     {
-        foreach ($board->getShips() as $key => $ship) {
-            $command = new PlaceShip($board->id, $ship->id, $key * 2, $key + 1, 'east');
+        foreach ($board->getShips()->getValues() as $key => $ship) {
+            $command = new PlaceShip($game->id, $board->id, $ship->id, $key * 2, $key + 1, 'east');
             $handler->handle($command);
         }
     }
 
-    private function fireMissiles(Board $board, FireMissileHandler $handler): void
+    private function fireMissiles(Game $game, Board $board, FireMissileHandler $handler): void
     {
-        foreach ($board->getShips() as $key => $ship) {
+        foreach ($board->getShips()->getValues() as $key => $ship) {
             $shipCoordinates = $this->getCoordinates($ship->size, $key);
             foreach ($shipCoordinates as $coordinate) {
-                $command = new FireMissile($coordinate, $board->id);
+                $command = new FireMissile($coordinate, $game->id, $board->id);
 
                 $handler->handle($command);
             }

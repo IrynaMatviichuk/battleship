@@ -149,8 +149,8 @@ class Board
     {
         $ship = $this->ships[$shipId];
 
-        if ($ship->board->id !== $this->id) {
-            throw new \InvalidArgumentException();
+        if (!$ship) {
+            throw new \InvalidArgumentException('Ship does not belong to board');
         }
 
         if ($ship->size !== count($coordinates)) {

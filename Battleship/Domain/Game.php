@@ -37,10 +37,15 @@ class Game
     {
         $game = new self($id);
 
-        $game->boards->add(new Board($board1Id, $game));
-        $game->boards->add(new Board($board2Id, $game));
+        $game->boards[$board1Id] = new Board($board1Id, $game);
+        $game->boards[$board2Id] = new Board($board2Id, $game);
 
         return $game;
+    }
+
+    public function getBoards(): Collection
+    {
+        return $this->boards;
     }
 
     public function addPlayer(string $playerId): void

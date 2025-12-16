@@ -54,7 +54,7 @@ class Cell
     public function occupy(string $shipId): void
     {
         if ($this->shipId !== null) {
-            throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException('Cell is already occupied');
         }
 
         $this->shipId = $shipId;

@@ -18,11 +18,9 @@ class PlaceShipHandler
     public function handle(PlaceShip $command): void
     {
         $game = $this->games->findById($command->gameId);
-//        $board = $this->boards->findById($command->boardId);
-//
-//        $ship = $this->ships->findById($command->shipId);
 
-        $game->placeShip($command->shipId, $command->boardId, );
+        $ship = $this->ships->findById($command->shipId);
+
         $coordinates = [];
 
         for ($shift = 0; $shift < $ship->size; $shift++) {
@@ -35,6 +33,6 @@ class PlaceShipHandler
             }
         }
 
-        $board->placeShip($ship, $coordinates);
+        $game->placeShip($command->shipId, $command->boardId, $coordinates);
     }
 }
