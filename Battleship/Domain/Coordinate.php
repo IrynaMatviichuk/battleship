@@ -10,7 +10,7 @@ class Coordinate
     public function __construct(int $row, int $column)
     {
         if (!$this->isWithinRange($row) || !$this->isWithinRange($column)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidCoordinateRangeException();
         }
 
         $this->row = $row;

@@ -110,7 +110,7 @@ class Board
             });
 
             if (!$ship) {
-                throw new \InvalidArgumentException('Ship not found');
+                throw new NotFoundException('Ship not found.');
             }
 
             $ship->markAsSunk();
@@ -128,7 +128,7 @@ class Board
         });
 
         if (!$cell) {
-            throw new \InvalidArgumentException('Cell not found');
+            throw new NotFoundException('Cell not found.');
         }
 
         return $cell;
@@ -150,11 +150,11 @@ class Board
         $ship = $this->ships[$shipId];
 
         if (!$ship) {
-            throw new \InvalidArgumentException('Ship does not belong to board');
+            throw new ShipDoesNotBelongToBoardException();
         }
 
         if ($ship->size !== count($coordinates)) {
-            throw new \InvalidArgumentException();
+            throw new WrongNumberOfCoordinatesException();
         }
 
         $cells = $this->getCells($coordinates);

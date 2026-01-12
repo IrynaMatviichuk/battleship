@@ -3,10 +3,14 @@
 namespace Tests\Battleship\Domain;
 
 use Battleship\Domain\Board;
+use Battleship\Domain\CellIsOccupiedException;
 use Battleship\Domain\Coordinate;
 use Battleship\Domain\Game;
 use Battleship\Domain\GuessWasMade;
+use Battleship\Domain\GuessWasMadeException;
 use Battleship\Domain\Ship;
+use Battleship\Domain\ShipDoesNotBelongToBoardException;
+use Battleship\Domain\WrongNumberOfCoordinatesException;
 use PHPUnit\Framework\TestCase;
 
 class BoardTest extends TestCase
@@ -77,7 +81,7 @@ class BoardTest extends TestCase
 
     public function test_it_throws_on_second_guess(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(GuessWasMadeException::class);
 
         $game = $this->createMock(Game::class);
         $board = new Board(1, $game);
@@ -88,7 +92,7 @@ class BoardTest extends TestCase
 
     public function test_it_throws_on_collision(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(CellIsOccupiedException::class);
 
         $game = $this->createMock(Game::class);
         $board = new Board(1, $game);
@@ -115,7 +119,7 @@ class BoardTest extends TestCase
 
     public function test_it_throws_on_foreign_ship(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(ShipDoesNotBelongToBoardException::class);
 
         $game = $this->createMock(Game::class);
 
@@ -134,7 +138,7 @@ class BoardTest extends TestCase
 
     public function test_it_throws_in_wrong_size(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(WrongNumberOfCoordinatesException::class);
 
         $game = $this->createMock(Game::class);
         $board = new Board(1, $game);

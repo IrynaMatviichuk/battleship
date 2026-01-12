@@ -2,6 +2,7 @@
 
 namespace Tests\Battleship\Domain;
 
+use Battleship\Domain\InvalidGamePhaseException;
 use Battleship\Infrastructure\InMemoryBoardRepository;
 use Battleship\Domain\BattleHasBegun;
 use Battleship\Domain\Board;
@@ -59,7 +60,7 @@ class GameTest extends TestCase
 
     public function test_player_cant_guess_during_place_ships_phase(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidGamePhaseException::class);
 
         $game = Game::startGame('game_id', 'board_1', 'board_2');
         $game->addPlayer('player_1');
@@ -70,7 +71,7 @@ class GameTest extends TestCase
 
     public function test_player_cant_place_ship_during_battle_phase(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidGamePhaseException::class);
 
         $game = Game::startGame('game_id', 'board_1', 'board_2');
         $game->addPlayer('player_1');

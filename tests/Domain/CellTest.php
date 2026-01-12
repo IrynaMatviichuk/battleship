@@ -4,6 +4,7 @@ namespace Tests\Battleship\Domain;
 
 use Battleship\Domain\Board;
 use Battleship\Domain\Cell;
+use Battleship\Domain\CellIsOccupiedException;
 use Battleship\Domain\Coordinate;
 use Battleship\Domain\Game;
 use Battleship\Domain\Ship;
@@ -57,7 +58,7 @@ class CellTest extends TestCase
 
     public function test_it_throws_when_occupied(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(CellIsOccupiedException::class);
 
         $game = $this->createMock(Game::class);
         $board = new Board('board_id', $game);
