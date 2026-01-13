@@ -56,7 +56,7 @@ class Game
     public function placeShip(string $shipId, string $boardId, array $coordinates): void
     {
         if ($this->phase !== Phase::PLACE_SHIPS) {
-            throw new \InvalidArgumentException();
+            throw new InvalidGamePhaseException();
         }
 
         /** @var Board $board */
@@ -68,7 +68,7 @@ class Game
     public function guess(string $boardId, Coordinate $coordinate): void
     {
         if ($this->phase !== Phase::BATTLE) {
-            throw new \InvalidArgumentException();
+            throw new InvalidGamePhaseException();
         }
 
         /** @var Board $board */

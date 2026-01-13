@@ -43,7 +43,7 @@ class Cell
     public function guess(): bool
     {
         if ($this->guessed !== null) {
-            throw new \InvalidArgumentException();
+            throw new GuessWasMadeException();
         }
 
         $this->guessed = $this->shipId !== null;
@@ -54,7 +54,7 @@ class Cell
     public function occupy(string $shipId): void
     {
         if ($this->shipId !== null) {
-            throw new \InvalidArgumentException('Cell is already occupied');
+            throw new CellIsOccupiedException();
         }
 
         $this->shipId = $shipId;

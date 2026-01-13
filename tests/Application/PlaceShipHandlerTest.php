@@ -4,14 +4,14 @@ namespace Tests\Battleship\Application;
 
 use Battleship\Application\PlaceShip;
 use Battleship\Application\PlaceShipHandler;
-use Battleship\Domain\Board;
+use Battleship\Domain\CellIsOccupiedException;
 use Battleship\Domain\Coordinate;
+use Battleship\Domain\InvalidCoordinateRangeException;
 use Battleship\Domain\Ship;
 use Battleship\Domain\Game;
 use Battleship\Infrastructure\InMemoryBoardRepository;
 use Battleship\Infrastructure\InMemoryShipRepository;
 use Battleship\Infrastructure\InMemoryGameRepository;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class PlaceShipHandlerTest extends TestCase
@@ -99,7 +99,7 @@ class PlaceShipHandlerTest extends TestCase
 
     public function test_it_places_ship_out_of_board(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(InvalidCoordinateRangeException::class);
 
         $game = Game::startGame('game_id', 'board_id', 'other_board_id');
 
@@ -125,7 +125,7 @@ class PlaceShipHandlerTest extends TestCase
 
     public function test_it_places_ship_over_ship(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(CellIsOccupiedException::class);
 
         $game = Game::startGame('game_id', 'board_id', 'other_board_id');
 
