@@ -2,13 +2,12 @@
 
 namespace Battleship\QueryModel;
 
-class BoardDto implements \JsonSerializable
+class ShipDto implements \JsonSerializable
 {
     public function __construct(
         public readonly string $id,
         public readonly int $size,
-        public readonly ?array $cells = null,
-        public readonly ?array $ships = null,
+        public readonly bool $sunk,
     ) {
     }
 
@@ -17,8 +16,7 @@ class BoardDto implements \JsonSerializable
         return [
             'id' => $this->id,
             'size' => $this->size,
-            'cells' => $this->cells,
-            'ships' => $this->ships,
+            'sunk' => $this->sunk,
         ];
     }
 }
